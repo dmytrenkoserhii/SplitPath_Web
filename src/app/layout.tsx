@@ -28,10 +28,10 @@ export default function RootLayout({
   return (
     <html lang='en' {...mantineHtmlProps}>
       <head>
-        <ColorSchemeScript defaultColorScheme='auto' />
+        <ColorSchemeScript defaultColorScheme='dark' />
       </head>
       <body className={roboto.className}>
-        <MantineProvider theme={theme} defaultColorScheme='auto'>
+        <MantineProvider theme={theme} defaultColorScheme='dark'>
           {children}
         </MantineProvider>
       </body>
