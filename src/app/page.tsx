@@ -1,7 +1,9 @@
+import { Box, Title } from '@mantine/core';
+
 export default function Home() {
   return (
-    <div>
-      <h1>SplitPath</h1>
-    </div>
+    <Box>
+      <Title c='orange'>SplitPath</Title>
+    </Box>
   );
 }
