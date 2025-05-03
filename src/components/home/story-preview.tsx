@@ -1,13 +1,16 @@
 import { Card, CardSection, Box, Text } from '@mantine/core';
 
-// StoryPreview component displays a preview card for a story
 interface StoryPreviewProps {
   title: string;
   description: string;
   imageUrl: string;
 }
 
-export function StoryPreview({ title, description, imageUrl }: StoryPreviewProps) {
+export const StoryPreview = ({
+  title,
+  description,
+  imageUrl,
+}: StoryPreviewProps) => {
   return (
     <Card shadow='md' padding='xl' radius='md' withBorder>
       <CardSection>
@@ -34,4 +37,4 @@ export function StoryPreview({ title, description, imageUrl }: StoryPreviewProps
       </Text>
     </Card>
   );
-} 
+};

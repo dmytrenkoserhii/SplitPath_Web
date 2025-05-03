@@ -1,13 +1,12 @@
 import { Group, ThemeIcon, Text } from '@mantine/core';
 
-// Feature component displays an icon with title and description
 interface FeatureProps {
   icon: React.ReactNode;
   title: string;
   description: string;
 }
 
-export function Feature({ icon, title, description }: FeatureProps) {
+export const Feature = ({ icon, title, description }: FeatureProps) => {
   return (
     <Group align='flex-start' wrap='nowrap'>
       <ThemeIcon size='xl' radius='md' variant='light' color='orange'>
@@ -23,4 +22,4 @@ export function Feature({ icon, title, description }: FeatureProps) {
       </div>
     </Group>
   );
-}
+};

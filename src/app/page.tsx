@@ -1,5 +1,4 @@
-import { Feature } from '@/components/@home/Feature';
-import { StoryPreview } from '@/components/@home/StoryPreview';
+import { Feature, StoryPreview } from '@/components/home';
 import {
   Box,
   Title,
@@ -7,13 +6,10 @@ import {
   Button,
   Container,
   Stack,
-  Group,
   ThemeIcon,
   SimpleGrid,
-  Card,
   List,
   ListItem,
-  CardSection,
 } from '@mantine/core';
 import {
   Book,
@@ -39,7 +35,7 @@ export default function Home() {
         </Text>
         <Button
           component={Link}
-          href='/story-selection'
+          href='/stories/selection'
           size='xl'
           variant='gradient'
           gradient={{ from: 'orange', to: 'red' }}
@@ -148,7 +144,7 @@ export default function Home() {
       <Box py={50} ta='center'>
         <Button
           component={Link}
-          href='/story-selection'
+          href='/stories/selection'
           size='xl'
           variant='gradient'
           gradient={{ from: 'orange', to: 'red' }}

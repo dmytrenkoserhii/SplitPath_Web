@@ -1,8 +1,6 @@
 import { AppShell, AppShellMain } from '@mantine/core';
-import { HeaderWithBurger } from '@/components/layout/HeaderWithBurger';
-import { MainNavbar } from '@/components/layout/MainNavbar';
-import { MainFooter } from '@/components/layout/MainFooter';
-import { NavbarProvider } from '@/hooks/useNavbarState';
+import { HeaderWithBurger, MainNavbar, MainFooter } from '@/components/layout';
+import { NavbarProvider } from '@/hooks';
 
 export default function MainLayout({
   children,

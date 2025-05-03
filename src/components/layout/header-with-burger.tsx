@@ -2,10 +2,10 @@
 
 import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ThemeToggle } from '../ui/ThemeToggle';
-import { useNavbarState } from '@/hooks/useNavbarState';
+import { ThemeToggle } from '../ui';
+import { useNavbarState } from '@/hooks';
 
-export function HeaderWithBurger() {
+export const HeaderWithBurger = () => {
   const [opened, { toggle }] = useDisclosure();
   const { setNavbarOpen } = useNavbarState();
 
@@ -32,4 +32,4 @@ export function HeaderWithBurger() {
       </Group>
     </AppShell.Header>
   );
-}
+};

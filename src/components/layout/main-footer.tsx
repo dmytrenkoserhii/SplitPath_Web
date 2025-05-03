@@ -1,6 +1,6 @@
 import { AppShellFooter, Group, Text } from '@mantine/core';
 
-export function MainFooter() {
+export const MainFooter = () => {
   return (
     <AppShellFooter p='md'>
       <Group justify='space-between' h='100%'>
@@ -9,4 +9,4 @@ export function MainFooter() {
       </Group>
     </AppShellFooter>
   );
-}
+};
