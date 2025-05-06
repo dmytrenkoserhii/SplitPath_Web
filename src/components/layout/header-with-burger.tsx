@@ -1,9 +1,10 @@
 'use client';
 
-import { AppShell, Burger, Group } from '@mantine/core';
+import { AppShell, Burger, Button, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ThemeToggle } from '../ui';
 import { useNavbarState } from '@/hooks';
+import Link from 'next/link';
 
 export const HeaderWithBurger = () => {
   const [opened, { toggle }] = useDisclosure();
@@ -28,7 +29,12 @@ export const HeaderWithBurger = () => {
             SplitPath
           </span>
         </Group>
-        <ThemeToggle />
+        <Group>
+          <Link href='/sign-in'>
+            <Button variant='outline'>Sign In</Button>
+          </Link>
+          <ThemeToggle />
+        </Group>
       </Group>
     </AppShell.Header>
   );

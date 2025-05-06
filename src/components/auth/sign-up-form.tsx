@@ -1,0 +1,132 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { z } from 'zod';
+import { useForm, zodResolver } from '@mantine/form';
+import {
+  Anchor,
+  Button,
+  Checkbox,
+  Divider,
+  Group,
+  Paper,
+  PasswordInput,
+  Stack,
+  TextInput,
+  Title,
+} from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+
+import { SignUpFormSchema } from '@/schemas/auth';
+import { signUpAction } from '@/actions/auth';
+import { useRouter } from 'next/navigation';
+
+type SignUpFormData = z.infer<typeof SignUpFormSchema>;
+
+export function SignUpForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const form = useForm<SignUpFormData>({
+    validate: zodResolver(SignUpFormSchema),
+    initialValues: {
+      username: '',
+      email: '',
+      password: '',
+      passwordConfirmation: '',
+      terms: false,
+    },
+  });
+
+  const handleSubmit = form.onSubmit(async (values) => {
+    setIsLoading(true);
+    const { username, email, password } = values;
+    const result = await signUpAction({ username, email, password });
+    setIsLoading(false);
+
+    if (result.success) {
+      notifications.show({
+        title: 'Sign Up Successful',
+        message: 'Please check your email for confirmation.',
+        color: 'green',
+      });
+      form.reset();
+      router.push('/stories/selection');
+    } else {
+      notifications.show({
+        title: 'Sign Up Failed',
+        message: result.error || 'An unknown error occurred.',
+        color: 'red',
+      });
+    }
+  });
+
+  return (
+    <Paper
+      shadow='md'
+      radius='md'
+      p='xl'
+      withBorder
+      w={{ base: '90%', sm: 450 }}
+    >
+      <Title order={2} ta='center' mt='md' mb={50}>
+        Create Account
+      </Title>
+
+      <form onSubmit={handleSubmit}>
+        <Stack gap='md'>
+          <TextInput
+            label='Username'
+            placeholder='Your username'
+            required
+            {...form.getInputProps('username')}
+          />
+
+          <TextInput
+            label='Email'
+            placeholder='hello@mantine.dev'
+            required
+            {...form.getInputProps('email')}
+          />
+
+          <PasswordInput
+            label='Password'
+            placeholder='Your password'
+            required
+            {...form.getInputProps('password')}
+          />
+
+          <PasswordInput
+            label='Confirm password'
+            placeholder='Confirm password'
+            required
+            {...form.getInputProps('passwordConfirmation')}
+          />
+
+          <Checkbox
+            label='I accept terms and conditions'
+            {...form.getInputProps('terms', { type: 'checkbox' })}
+          />
+
+          <Button type='submit' fullWidth mt='xl' loading={isLoading}>
+            Sign Up
+          </Button>
+        </Stack>
+      </form>
+
+      <Divider label='Or continue with' labelPosition='center' my='lg' />
+
+      <Button variant='outline' fullWidth disabled>
+        {/* TODO: Implement Google Sign Up */}
+        Google
+      </Button>
+
+      <Group justify='center' mt='md'>
+        <Anchor component={Link} href='/sign-in' size='sm'>
+          Already have an account? Sign In
+        </Anchor>
+      </Group>
+    </Paper>
+  );
+}

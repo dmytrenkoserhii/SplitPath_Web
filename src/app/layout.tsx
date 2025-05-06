@@ -9,6 +9,7 @@ import {
   mantineHtmlProps,
 } from '@mantine/core';
 import { theme } from '@/theme';
+import { Notifications } from '@mantine/notifications';
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -32,6 +33,7 @@ export default function RootLayout({
       </head>
       <body className={roboto.className}>
         <MantineProvider theme={theme} defaultColorScheme='dark'>
+          <Notifications />
           {children}
         </MantineProvider>
       </body>
