@@ -8,7 +8,7 @@ import {
 import { Sun, Moon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-export function ThemeToggle() {
+export const ThemeToggle = () => {
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light');
   // Add client-side only rendering to prevent hydration mismatch
@@ -44,4 +44,4 @@ export function ThemeToggle() {
       {computedColorScheme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
     </ActionIcon>
   );
-}
+};

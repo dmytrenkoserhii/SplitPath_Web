@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { z } from 'zod';
 import { useForm, zodResolver } from '@mantine/form';
 import {
   Anchor,
@@ -19,16 +18,16 @@ import {
 import { notifications } from '@mantine/notifications';
 
 import { SignUpFormSchema } from '@/schemas/auth';
-import { signUpAction } from '@/actions/auth';
 import { useRouter } from 'next/navigation';
+import { authService } from '@/services';
+import { SignUpFormSchemaType } from '@/schemas/auth';
 
-type SignUpFormData = z.infer<typeof SignUpFormSchema>;
-
-export function SignUpForm() {
+// TODO: notifications doesn't work
+export const SignUpForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const form = useForm<SignUpFormData>({
+  const form = useForm<SignUpFormSchemaType>({
     validate: zodResolver(SignUpFormSchema),
     initialValues: {
       username: '',
@@ -42,10 +41,11 @@ export function SignUpForm() {
   const handleSubmit = form.onSubmit(async (values) => {
     setIsLoading(true);
     const { username, email, password } = values;
-    const result = await signUpAction({ username, email, password });
+    const { signUp } = authService();
+    const result = await signUp({ username, email, password });
     setIsLoading(false);
 
-    if (result.success) {
+    if (result.response.ok) {
       notifications.show({
         title: 'Sign Up Successful',
         message: 'Please check your email for confirmation.',
@@ -56,7 +56,7 @@ export function SignUpForm() {
     } else {
       notifications.show({
         title: 'Sign Up Failed',
-        message: result.error || 'An unknown error occurred.',
+        message: result.response.statusText || 'An unknown error occurred.',
         color: 'red',
       });
     }
@@ -129,4 +129,4 @@ export function SignUpForm() {
       </Group>
     </Paper>
   );
-}
+};

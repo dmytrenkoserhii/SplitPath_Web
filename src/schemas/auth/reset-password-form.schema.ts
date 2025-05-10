@@ -9,7 +9,8 @@ export const ResetPasswordSchema = z
         const containsUppercase = /[A-Z]/.test(password);
         const containsLowercase = /[a-z]/.test(password);
         const containsNumber = /\d/.test(password);
-        const containsSpecialChar = /[`!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?~ ]/.test(password);
+        const containsSpecialChar =
+          /[`!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?~ ]/.test(password);
 
         if (!containsUppercase) {
           checkPassComplexity.addIssue({
@@ -45,3 +46,9 @@ export const ResetPasswordSchema = z
     message: 'Passwords must match!',
     path: ['passwordConfirmation'],
   });
+
+export type ResetPasswordSchemaType = z.infer<typeof ResetPasswordSchema>;
+export type ResetPasswordDataType = Omit<
+  z.infer<typeof ResetPasswordSchema>,
+  'confirmPassword'
+>;

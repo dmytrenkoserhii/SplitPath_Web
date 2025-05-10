@@ -1,4 +1,4 @@
-import { NavigationLink } from '@/interfaces';
+import { NavigationLink } from '@/types/shared';
 import { User, MessageCircle } from 'lucide-react';
 
 export const NAVIGATION_LINKS: NavigationLink[] = [

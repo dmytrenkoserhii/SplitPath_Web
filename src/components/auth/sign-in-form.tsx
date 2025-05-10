@@ -1,10 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { signInAction } from '@/actions/auth';
-import { SignInFormSchema } from '@/schemas/auth';
+import { SignInFormSchema, SignInFormSchemaType } from '@/schemas/auth';
 import {
   Anchor,
   Button,
@@ -19,14 +17,14 @@ import {
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import Link from 'next/link';
+import { authService } from '@/services';
 
-type SignInFormData = z.infer<typeof SignInFormSchema>;
-
-export function SignInForm() {
+// TODO: notifications doesn't work
+export const SignInForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const form = useForm<SignInFormData>({
+  const form = useForm<SignInFormSchemaType>({
     validate: zodResolver(SignInFormSchema),
     initialValues: {
       email: '',
@@ -37,15 +35,17 @@ export function SignInForm() {
   const handleSubmit = form.onSubmit(async (values) => {
     setIsLoading(true);
     try {
-      const result = await signInAction(values);
+      const { signIn } = authService();
+      const result = await signIn(values);
 
-      if (result.success) {
+      if (result.response.ok) {
         router.push('/stories/selection');
       } else {
         notifications.show({
           title: 'Sign in failed',
           message:
-            result.error || 'Please check your credentials and try again',
+            result.response.statusText ||
+            'Please check your credentials and try again',
           color: 'red',
         });
       }
@@ -114,4 +114,4 @@ export function SignInForm() {
       </Group>
     </Paper>
   );
-}
+};

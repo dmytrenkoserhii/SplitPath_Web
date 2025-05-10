@@ -3,6 +3,10 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
+    staleTimes: {
+      dynamic: 0,
+      static: 0,
+    },
   },
 };
 

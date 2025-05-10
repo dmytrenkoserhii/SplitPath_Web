@@ -1,4 +1,4 @@
-import { NavigationLink as NavigationLinkInterface } from '@/interfaces';
+import { NavigationLink as NavigationLinkInterface } from '@/types/shared';
 import { NavLink } from '@mantine/core';
 import Link from 'next/link';
 
