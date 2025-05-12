@@ -1,6 +1,7 @@
 'use server';
 
 import { xiorClient } from '@/lib';
+import { User } from '@/types/user';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -9,8 +10,9 @@ if (!BACKEND_URL) {
 }
 
 // TODO: Do we even need to use server actions for this?
+// TODO: Add service for this
 export async function getCurrentUserAction(): Promise<{
-  user: any | null;
+  user: User | null;
   error?: string;
 }> {
   try {
