@@ -3,8 +3,10 @@
 import { friendsService } from '@/services';
 import { Friend } from '@/types/friends';
 import { User } from '@/types/user';
+import { Tabs, Stack } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { PendingRequestsListItem } from './pending-requests-list-item';
 
 interface PendingRequestsListProps {
   incomingRequests: Friend[];
@@ -90,5 +92,46 @@ export const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
     deleteRequestMutation.mutate(requestId);
   };
 
-  return <div>PendingRequestsList</div>;
+  return (
+    <Tabs orientation='vertical' defaultValue='incoming'>
+      <Tabs.List mr='md'>
+        <Tabs.Tab value='incoming'>
+          Incoming ({incomingRequests.length})
+        </Tabs.Tab>
+        <Tabs.Tab value='outgoing'>
+          Outgoing ({outgoingRequests.length})
+        </Tabs.Tab>
+      </Tabs.List>
+
+      <Tabs.Panel value='incoming'>
+        <Stack>
+          {incomingRequests.map((friend) => (
+            <PendingRequestsListItem
+              key={friend.id}
+              friend={friend}
+              onAcceptIncoming={onAcceptIncoming}
+              onRejectIncoming={onRejectIncoming}
+              onDeleteOutgoing={onDeleteOutgoing}
+              currentUser={currentUser}
+            />
+          ))}
+        </Stack>
+      </Tabs.Panel>
+
+      <Tabs.Panel value='outgoing'>
+        <Stack>
+          {outgoingRequests.map((friend) => (
+            <PendingRequestsListItem
+              key={friend.id}
+              friend={friend}
+              onAcceptIncoming={onAcceptIncoming}
+              onRejectIncoming={onRejectIncoming}
+              onDeleteOutgoing={onDeleteOutgoing}
+              currentUser={currentUser}
+            />
+          ))}
+        </Stack>
+      </Tabs.Panel>
+    </Tabs>
+  );
 };

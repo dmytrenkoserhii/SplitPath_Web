@@ -1,5 +1,6 @@
 'use client';
 
+import { Stack, Text } from '@mantine/core';
 import { friendsService } from '@/services';
 import { Friend } from '@/types/friends';
 import { User } from '@/types/user';
@@ -7,6 +8,7 @@ import { notifications } from '@mantine/notifications';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { FriendsListItem } from './friends-list-item';
 
 interface FriendsListProps {
   friends: Friend[];
@@ -54,5 +56,25 @@ export const FriendsList = ({ friends, currentUser }: FriendsListProps) => {
     router.push(`/chats/${friendId}`);
   };
 
-  return <div>FriendsList</div>;
+  if (friends.length === 0) {
+    return (
+      <Text c='dimmed' ta='center' py='xl'>
+        No friends yet
+      </Text>
+    );
+  }
+
+  return (
+    <Stack>
+      {friends.map((friend) => (
+        <FriendsListItem
+          key={friend.id}
+          friend={friend}
+          currentUser={currentUser}
+          onDelete={handleDeleteFriend}
+          onMessage={onMessage}
+        />
+      ))}
+    </Stack>
+  );
 };
