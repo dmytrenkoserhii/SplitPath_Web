@@ -2,7 +2,14 @@ import xior, { XiorRequestConfig, XiorError } from 'xior';
 import { authService } from '@/services';
 import { isClientSide } from '@/utils';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+if (!BACKEND_URL) {
+  throw new Error('Missing environment variable: BACKEND_URL');
+}
+
 export const xiorClient = xior.create({
+  baseURL: BACKEND_URL,
   withCredentials: true,
   cache: 'no-store',
 });

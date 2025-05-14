@@ -28,7 +28,7 @@ export const authService = (): AuthApi => {
 };
 
 const signUp = (data: SignUpDataType) => {
-  return xiorClient.post<User>(`${BACKEND_URL}/auth/register`, {
+  return xiorClient.post<User>(`auth/register`, {
     email: data.email,
     password: data.password,
     username: data.username,
@@ -36,21 +36,21 @@ const signUp = (data: SignUpDataType) => {
 };
 
 const signIn = (data: SignInFormSchemaType) => {
-  return xiorClient.post<User>(`${BACKEND_URL}/auth/sign-in`, {
+  return xiorClient.post<User>(`auth/sign-in`, {
     email: data.email,
     password: data.password,
   });
 };
 
 const logout = (headers?: Headers) => {
-  return xiorClient.get<void>(`${BACKEND_URL}/auth/logout`, { headers });
+  return xiorClient.get<void>(`auth/logout`, { headers });
 };
 
 // TODO: Rename/Change this. Either we use /users/current or we create another endpoint
 const verifyAccessToken = (headers?: Headers) => {
-  return xiorClient.get<User>(`${BACKEND_URL}/users/current`, { headers });
+  return xiorClient.get<User>(`users/current`, { headers });
 };
 
 const refreshAccessToken = (headers?: Headers) => {
-  return xiorClient.get<void>(`${BACKEND_URL}/auth/refresh`, { headers });
+  return xiorClient.get<void>(`auth/refresh`, { headers });
 };
