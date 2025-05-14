@@ -10,6 +10,7 @@ import {
 } from '@mantine/core';
 import { theme } from '@/theme';
 import { Notifications } from '@mantine/notifications';
+import { ReactQueryClientProvider } from '@/providers';
 
 const roboto = Roboto({
   weight: ['400', '500', '700'],
@@ -32,10 +33,12 @@ export default function RootLayout({
         <ColorSchemeScript defaultColorScheme='dark' />
       </head>
       <body className={roboto.className}>
-        <MantineProvider theme={theme} defaultColorScheme='dark'>
-          <Notifications />
-          {children}
-        </MantineProvider>
+        <ReactQueryClientProvider>
+          <MantineProvider theme={theme} defaultColorScheme='dark'>
+            <Notifications />
+            {children}
+          </MantineProvider>
+        </ReactQueryClientProvider>
       </body>
     </html>
   );

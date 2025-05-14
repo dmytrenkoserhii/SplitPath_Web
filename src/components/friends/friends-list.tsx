@@ -4,6 +4,8 @@ import { friendsService } from '@/services';
 import { Friend } from '@/types/friends';
 import { User } from '@/types/user';
 import { notifications } from '@mantine/notifications';
+import { useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 interface FriendsListProps {
@@ -13,22 +15,39 @@ interface FriendsListProps {
 
 export const FriendsList = ({ friends, currentUser }: FriendsListProps) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const onDelete = async (friendId: number) => {
-    const response = await friendsService().deleteFriend(friendId);
-    if (response.response.ok) {
+  const { deleteFriend } = friendsService();
+
+  const deleteFriendMutation = useMutation({
+    mutationFn: async (friendId: number) => {
+      const serviceResponse = await deleteFriend(friendId);
+      if (!serviceResponse.response.ok) {
+        const errorMessage =
+          serviceResponse.statusText || 'Failed to delete friend.';
+        throw new Error(errorMessage);
+      }
+      return serviceResponse;
+    },
+    onSuccess: (data, variables) => {
       notifications.show({
         title: 'Friend deleted',
-        message: 'Friend deleted successfully',
+        message: 'Friend deleted successfully!',
         color: 'green',
       });
-    } else {
+      queryClient.invalidateQueries({ queryKey: ['friends'] });
+    },
+    onError: (error: Error) => {
       notifications.show({
         title: 'Error',
-        message: 'Failed to delete friend',
+        message: error.message || 'Failed to delete friend.',
         color: 'red',
       });
-    }
+    },
+  });
+
+  const handleDeleteFriend = (friendId: number) => {
+    deleteFriendMutation.mutate(friendId);
   };
 
   const onMessage = async (friendId: number) => {

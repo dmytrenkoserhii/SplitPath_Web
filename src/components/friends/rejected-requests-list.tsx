@@ -4,6 +4,7 @@ import { friendsService } from '@/services';
 import { Friend } from '@/types/friends';
 import { User } from '@/types/user';
 import { notifications } from '@mantine/notifications';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface RejectedRequestsListProps {
   incomingRejected: Friend[];
@@ -16,37 +17,53 @@ export const RejectedRequestsList: React.FC<RejectedRequestsListProps> = ({
   outgoingRejected,
   currentUser,
 }) => {
-  const onAccept = async (requestId: number) => {
-    const response = await friendsService().acceptFriendRequest(requestId);
-    if (response.response.ok) {
+  const queryClient = useQueryClient();
+  const { acceptFriendRequest, resendFriendRequest } = friendsService();
+
+  const acceptRequestMutation = useMutation({
+    mutationFn: (requestId: number) => acceptFriendRequest(requestId),
+    onSuccess: () => {
       notifications.show({
         title: 'Friend request accepted',
         message: 'Friend request accepted successfully',
         color: 'green',
       });
-    } else {
+      queryClient.invalidateQueries({ queryKey: ['friends'] });
+    },
+    onError: () => {
       notifications.show({
         title: 'Error',
         message: 'Failed to accept friend request',
         color: 'red',
       });
-    }
-  };
-  const onResend = async (requestId: number) => {
-    const response = await friendsService().resendFriendRequest(requestId);
-    if (response.response.ok) {
+    },
+  });
+
+  const resendRequestMutation = useMutation({
+    mutationFn: (requestId: number) => resendFriendRequest(requestId),
+    onSuccess: () => {
       notifications.show({
         title: 'Friend request resent',
         message: 'Friend request resent successfully',
         color: 'green',
       });
-    } else {
+      queryClient.invalidateQueries({ queryKey: ['friends'] });
+    },
+    onError: () => {
       notifications.show({
         title: 'Error',
         message: 'Failed to resend friend request',
         color: 'red',
       });
-    }
+    },
+  });
+
+  const onAccept = (requestId: number) => {
+    acceptRequestMutation.mutate(requestId);
+  };
+
+  const onResend = (requestId: number) => {
+    resendRequestMutation.mutate(requestId);
   };
 
   return <div>RejectedRequestsList</div>;
