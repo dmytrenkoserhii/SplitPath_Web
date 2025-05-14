@@ -7,12 +7,6 @@ import {
   GetFriendRequestsType,
 } from '@/schemas/friends';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-if (!BACKEND_URL) {
-  throw new Error('Missing environment variable: BACKEND_URL');
-}
-
 interface FriendsApi {
   sendFriendRequest: (
     data: CreateFriendRequestType

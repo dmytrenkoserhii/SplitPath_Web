@@ -3,12 +3,6 @@ import { SignUpDataType, SignInFormSchemaType } from '@/schemas/auth';
 import { xiorClient } from '@/lib';
 import { User } from '@/types/user';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-if (!BACKEND_URL) {
-  throw new Error('Missing environment variable: BACKEND_URL');
-}
-
 interface AuthApi {
   signUp: (data: SignUpDataType) => Promise<XiorResponse<User>>;
   signIn: (data: SignInFormSchemaType) => Promise<XiorResponse<User>>;
