@@ -1,3 +1,3 @@
-export { HeaderWithBurger } from './header-with-burger';
-export { MainFooter } from './main-footer';
-export { MainNavbar } from './main-navbar';
+export { Header } from './header';
+export { Footer } from './footer';
+export { Navbar } from './navbar';
