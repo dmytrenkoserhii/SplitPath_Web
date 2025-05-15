@@ -69,7 +69,7 @@ export const RejectedRequestsListItem = ({
         <Group gap='sm'>
           <Box pos='relative'>
             <Avatar
-              src={userToDisplay.account.avatarUrl}
+              src={userToDisplay.account?.avatarUrl}
               size='md'
               radius='xl'
               color='initials'

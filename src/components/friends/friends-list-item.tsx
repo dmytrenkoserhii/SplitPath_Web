@@ -66,7 +66,7 @@ export const FriendsListItem = ({
               processing
             >
               <Avatar
-                src={userToDisplay.account.avatarUrl}
+                src={userToDisplay.account?.avatarUrl}
                 size='md'
                 radius='xl'
                 color='initials'
