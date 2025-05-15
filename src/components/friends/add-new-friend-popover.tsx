@@ -9,7 +9,9 @@ import { useForm, zodResolver } from '@mantine/form';
 import { useMutation, useQueryClient } from '@tanstack/react-query'; // Assuming @tanstack/react-query
 import { friendsService } from '@/services/friends.service'; // Assuming your service path
 import { notifications } from '@mantine/notifications'; // For feedback
+import { ReactQueryTags } from '@/enums';
 
+// TODO: close popover on success
 export const AddNewFriendPopover = () => {
   const queryClient = useQueryClient();
   const form = useForm({
@@ -29,8 +31,12 @@ export const AddNewFriendPopover = () => {
         message: 'Friend request sent successfully!',
         color: 'green',
       });
-      queryClient.invalidateQueries({ queryKey: ['friendRequests'] }); // Invalidate relevant queries
-      // Potentially close popover, reset form etc.
+      // Invalidate all potentially affected queries
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_OUTGOING],
+      });
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.FRIENDS] });
+      // Reset form
       form.reset();
     },
     onError: (error: any) => {
@@ -50,7 +56,7 @@ export const AddNewFriendPopover = () => {
   return (
     <Popover width={400} position='bottom' withArrow shadow='md' trapFocus>
       <Popover.Target>
-        <Button variant='outline' size='xs'>
+        <Button variant='outline' color='green'>
           Add friend
         </Button>
       </Popover.Target>

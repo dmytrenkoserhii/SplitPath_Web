@@ -3,10 +3,11 @@
 import { friendsService } from '@/services';
 import { Friend } from '@/types/friends';
 import { User } from '@/types/user';
-import { Tabs, Stack } from '@mantine/core';
+import { Tabs, Stack, Divider } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { PendingRequestsListItem } from './pending-requests-list-item';
+import { ReactQueryTags } from '@/enums';
 
 interface PendingRequestsListProps {
   incomingRequests: Friend[];
@@ -31,7 +32,13 @@ export const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
         message: 'Friend request accepted successfully',
         color: 'green',
       });
-      queryClient.invalidateQueries({ queryKey: ['friends'] });
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.FRIENDS] });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_INCOMING],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_OUTGOING],
+      });
     },
     onError: () => {
       notifications.show({
@@ -50,7 +57,12 @@ export const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
         message: 'Friend request rejected successfully',
         color: 'green',
       });
-      queryClient.invalidateQueries({ queryKey: ['friends'] });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_INCOMING],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_REJECTED_INCOMING],
+      });
     },
     onError: () => {
       notifications.show({
@@ -69,7 +81,12 @@ export const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
         message: 'Friend request deleted successfully',
         color: 'green',
       });
-      queryClient.invalidateQueries({ queryKey: ['friends'] });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_INCOMING],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_OUTGOING],
+      });
     },
     onError: () => {
       notifications.show({
@@ -93,7 +110,7 @@ export const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
   };
 
   return (
-    <Tabs orientation='vertical' defaultValue='incoming'>
+    <Tabs orientation='vertical' defaultValue='incoming' variant='pills'>
       <Tabs.List mr='md'>
         <Tabs.Tab value='incoming'>
           Incoming ({incomingRequests.length})
@@ -102,6 +119,8 @@ export const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
           Outgoing ({outgoingRequests.length})
         </Tabs.Tab>
       </Tabs.List>
+
+      <Divider orientation='vertical' />
 
       <Tabs.Panel value='incoming'>
         <Stack>

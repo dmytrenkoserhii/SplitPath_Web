@@ -22,7 +22,7 @@ export const authService = (): AuthApi => {
 };
 
 const signUp = (data: SignUpDataType) => {
-  return xiorClient.post<User>(`auth/register`, {
+  return xiorClient.post<User>(`auth/sign-up`, {
     email: data.email,
     password: data.password,
     username: data.username,

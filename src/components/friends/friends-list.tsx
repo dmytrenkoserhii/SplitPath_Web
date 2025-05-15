@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { FriendsListItem } from './friends-list-item';
+import { ReactQueryTags } from '@/enums';
 
 interface FriendsListProps {
   friends: Friend[];
@@ -37,7 +38,7 @@ export const FriendsList = ({ friends, currentUser }: FriendsListProps) => {
         message: 'Friend deleted successfully!',
         color: 'green',
       });
-      queryClient.invalidateQueries({ queryKey: ['friends'] });
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.FRIENDS] });
     },
     onError: (error: Error) => {
       notifications.show({

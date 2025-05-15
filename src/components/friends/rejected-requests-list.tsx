@@ -3,10 +3,11 @@
 import { friendsService } from '@/services';
 import { Friend } from '@/types/friends';
 import { User } from '@/types/user';
-import { Tabs, Stack } from '@mantine/core';
+import { Tabs, Stack, Divider } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { RejectedRequestsListItem } from './rejected-requests-list-item';
+import { ReactQueryTags } from '@/enums';
 
 interface RejectedRequestsListProps {
   incomingRejected: Friend[];
@@ -30,7 +31,13 @@ export const RejectedRequestsList: React.FC<RejectedRequestsListProps> = ({
         message: 'Friend request accepted successfully',
         color: 'green',
       });
-      queryClient.invalidateQueries({ queryKey: ['friends'] });
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.FRIENDS] });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_REJECTED_INCOMING],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_REJECTED_OUTGOING],
+      });
     },
     onError: () => {
       notifications.show({
@@ -49,7 +56,12 @@ export const RejectedRequestsList: React.FC<RejectedRequestsListProps> = ({
         message: 'Friend request resent successfully',
         color: 'green',
       });
-      queryClient.invalidateQueries({ queryKey: ['friends'] });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_OUTGOING],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.FRIEND_REQUESTS_REJECTED_OUTGOING],
+      });
     },
     onError: () => {
       notifications.show({
@@ -69,7 +81,7 @@ export const RejectedRequestsList: React.FC<RejectedRequestsListProps> = ({
   };
 
   return (
-    <Tabs orientation='vertical' defaultValue='incoming'>
+    <Tabs orientation='vertical' defaultValue='incoming' variant='pills'>
       <Tabs.List mr='md'>
         <Tabs.Tab value='incoming' color='red'>
           Incoming ({incomingRejected.length})
@@ -78,6 +90,8 @@ export const RejectedRequestsList: React.FC<RejectedRequestsListProps> = ({
           Outgoing ({outgoingRejected.length})
         </Tabs.Tab>
       </Tabs.List>
+
+      <Divider orientation='vertical' />
 
       <Tabs.Panel value='incoming'>
         <Stack>

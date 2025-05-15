@@ -61,6 +61,9 @@ const deleteFriend = (friendId: number) => {
 const getFriendsList = (page = 1, limit = 10) => {
   return xiorClient.get<PaginatedResponse<Friend>>(`friends`, {
     params: { page, limit },
+    next: {
+      tags: ['friends'],
+    },
   });
 };
 
