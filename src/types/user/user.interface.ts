@@ -10,6 +10,7 @@ export interface User {
   refreshToken: string | null;
   isEmailVerified: boolean;
   isPremium: boolean;
+  isOnline?: boolean;
   createdAt: Date;
   updatedAt: Date;
   stories: Story[];

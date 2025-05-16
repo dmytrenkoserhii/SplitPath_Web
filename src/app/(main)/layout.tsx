@@ -3,6 +3,7 @@ import { Header, Navbar, Footer } from '@/components/layout';
 import { NavbarProvider } from '@/hooks';
 import { getCurrentUserAction } from '@/actions/users';
 import { ServerError } from '@/components/auth';
+import { FriendsSocketManager } from '@/components/friends';
 
 export default async function MainLayout({
   children,
@@ -14,6 +15,8 @@ export default async function MainLayout({
 
     return (
       <NavbarProvider>
+        <FriendsSocketManager />
+
         <AppShell header={{ height: 60 }} footer={{ height: 60 }} padding='md'>
           <Header user={user} />
           <Navbar />

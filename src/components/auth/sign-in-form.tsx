@@ -18,6 +18,8 @@ import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import Link from 'next/link';
 import { authService } from '@/services';
+import { queryClient } from '@/lib';
+import { ReactQueryTags } from '@/enums';
 
 // TODO: notifications doesn't work
 export const SignInForm = () => {
@@ -39,6 +41,9 @@ export const SignInForm = () => {
       const result = await signIn(values);
 
       if (result.response.ok) {
+        queryClient.invalidateQueries({
+          queryKey: [ReactQueryTags.USER],
+        });
         router.push('/stories/selection');
       } else {
         notifications.show({
