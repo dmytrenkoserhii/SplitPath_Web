@@ -46,6 +46,7 @@ export const FriendsListItem = ({
 
   const userToDisplay =
     friend.sender.id === currentUser.id ? friend.receiver : friend.sender;
+  const isFriendOnline = userToDisplay.isOnline === true;
 
   return (
     <Paper
@@ -64,6 +65,7 @@ export const FriendsListItem = ({
               offset={6}
               position='bottom-end'
               processing
+              disabled={!isFriendOnline}
             >
               <Avatar
                 src={userToDisplay.account?.avatarUrl}
