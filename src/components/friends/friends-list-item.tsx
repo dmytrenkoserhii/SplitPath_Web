@@ -36,7 +36,9 @@ export const FriendsListItem = ({
 
   const onMessageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    onMessage(friend.id);
+    // We need to pass the user id, not the friend id
+    // We search for the user and not friend request
+    onMessage(userToDisplay.id);
   };
 
   const onDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {

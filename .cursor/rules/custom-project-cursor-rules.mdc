@@ -4,17 +4,23 @@ globs:
 alwaysApply: true
 ---
 Project tech stack:
-"@mantine/core": "^7.17.3",
-"@mantine/dates": "^7.17.3",
-"@mantine/form": "^7.17.3",
-"@mantine/hooks": "^7.17.3",
-"@mantine/modals": "^7.17.3",
-"@mantine/notifications": "^7.17.3",
-"dayjs": "^1.11.13",
-"lucide-react": "^0.487.0",
-"next": "15.2.4",
-"react": "^19.0.0",
-"react-dom": "^19.0.0"
+  "dependencies": {
+    "@mantine/core": "^7.17.3",
+    "@mantine/dates": "^7.17.3",
+    "@mantine/form": "^7.17.3",
+    "@mantine/hooks": "^7.17.3",
+    "@mantine/modals": "^7.17.3",
+    "@mantine/notifications": "^7.17.3",
+    "@tanstack/react-query": "^5.76.1",
+    "dayjs": "^1.11.13",
+    "lucide-react": "^0.487.0",
+    "next": "15.2.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "socket.io-client": "^4.8.1",
+    "xior": "^0.7.8",
+    "zod": "^3.24.3"
+  },
 
 # Cursor Development Rules & AI Collaboration Guide
  
