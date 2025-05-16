@@ -10,10 +10,10 @@ import {
   Title,
 } from '@mantine/core';
 import { usersService } from '@/services/users.service';
-import { friendsService } from '@/services/friends.service';
 import { formatDate } from '@/lib';
 import { CalendarClock, Mail, User as UserIcon } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { OnlineStatusBadge } from '@/components/friends/online-status-badge';
 
 interface FriendPageProps {
   params: {
@@ -24,50 +24,34 @@ interface FriendPageProps {
 export default async function FriendPage({ params }: FriendPageProps) {
   const { id } = await params;
   const userId = Number(id);
-  console.log(userId);
 
   if (isNaN(userId)) {
     notFound();
   }
 
   try {
-    const [friendResponse, statusResponse] = await Promise.all([
-      usersService().findOneById(userId),
-      friendsService().getFriendsOnlineStatus(),
-    ]);
-
+    const friendResponse = await usersService().findOneById(userId);
     const friend = friendResponse.data;
-    const onlineStatus = statusResponse.data;
-    const isOnline =
-      friend.id in onlineStatus ? onlineStatus[friend.id] : false;
 
     return (
       <Container size='md' py='xl'>
         <Card withBorder shadow='sm' radius='md'>
-          <CardSection p='lg' bg='gray.1'>
+          <CardSection p='lg'>
             <Group justify='space-between' align='flex-start'>
               <Group>
                 <Avatar
-                  src={friend.account?.avatarUrl}
+                  src={friend.account.avatarUrl}
                   size={120}
                   radius='md'
                   color='blue'
                 >
-                  {friend.account?.username?.substring(0, 2).toUpperCase() || (
+                  {friend.account.username?.substring(0, 2).toUpperCase() || (
                     <UserIcon size={40} />
                   )}
                 </Avatar>
                 <Stack gap='xs'>
-                  <Title order={2}>
-                    {friend.account?.username || 'Unknown'}
-                  </Title>
-                  <Badge
-                    color={isOnline ? 'green' : 'gray'}
-                    variant='light'
-                    size='lg'
-                  >
-                    {isOnline ? 'Online' : 'Offline'}
-                  </Badge>
+                  <Title order={2}>{friend.account.username}</Title>
+                  <OnlineStatusBadge userId={friend.id} />
                 </Stack>
               </Group>
             </Group>

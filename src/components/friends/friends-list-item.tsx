@@ -31,7 +31,7 @@ export const FriendsListItem = ({
   const router = useRouter();
 
   const onFriendClick = () => {
-    router.push(`/friends/${friend.id}`);
+    router.push(`/friends/${userToDisplay.id}`);
   };
 
   const onMessageClick = (e: React.MouseEvent<HTMLButtonElement>) => {

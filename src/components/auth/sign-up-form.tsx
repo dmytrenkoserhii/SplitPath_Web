@@ -21,6 +21,8 @@ import { SignUpFormSchema } from '@/schemas/auth';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services';
 import { SignUpFormSchemaType } from '@/schemas/auth';
+import { queryClient } from '@/lib';
+import { ReactQueryTags } from '@/enums';
 
 // TODO: notifications doesn't work
 export const SignUpForm = () => {
@@ -52,6 +54,9 @@ export const SignUpForm = () => {
         color: 'green',
       });
       form.reset();
+      queryClient.invalidateQueries({
+        queryKey: [ReactQueryTags.USER],
+      });
       router.push('/stories/selection');
     } else {
       notifications.show({
