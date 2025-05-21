@@ -122,7 +122,7 @@ export const SignUpForm = () => {
 
       <Divider label='Or continue with' labelPosition='center' my='lg' />
 
-      <Button variant='outline' fullWidth disabled>
+      <Button variant='outline' fullWidth onClick={() => authService().googleAuth()}>
         {/* TODO: Implement Google Sign Up */}
         Google
       </Button>

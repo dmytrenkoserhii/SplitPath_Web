@@ -108,13 +108,18 @@ export const SignInForm = () => {
 
       <Divider label='Or continue with' labelPosition='center' my='lg' />
 
-      <Button variant='outline' fullWidth disabled>
+      <Button
+        variant='outline'
+        fullWidth
+        onClick={() => authService().googleAuth()}
+        loading={isLoading}
+      >
         Google
       </Button>
 
       <Group justify='center' mt='md'>
         <Anchor component={Link} href='/sign-up' size='sm'>
-          Don't have an account? Register
+          Don&apos;t have an account? Register
         </Anchor>
       </Group>
     </Paper>

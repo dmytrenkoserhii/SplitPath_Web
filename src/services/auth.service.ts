@@ -9,6 +9,7 @@ interface AuthApi {
   logout: (headers?: Headers) => Promise<XiorResponse<void>>;
   verifyAccessToken: (headers?: Headers) => Promise<XiorResponse<User>>;
   refreshAccessToken: (headers?: Headers) => Promise<XiorResponse<void>>;
+  googleAuth: () => void;
 }
 
 export const authService = (): AuthApi => {
@@ -18,6 +19,7 @@ export const authService = (): AuthApi => {
     logout,
     verifyAccessToken,
     refreshAccessToken,
+    googleAuth,
   };
 };
 
@@ -27,6 +29,10 @@ const signUp = (data: SignUpDataType) => {
     password: data.password,
     username: data.username,
   });
+};
+
+const googleAuth = () => {
+  window.location.href = `${BACKEND_URL}/auth/google`;
 };
 
 const signIn = (data: SignInFormSchemaType) => {
