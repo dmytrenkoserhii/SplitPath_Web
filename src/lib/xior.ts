@@ -59,6 +59,9 @@ xiorClient.interceptors.response.use(
       error.response?.status === 401 &&
       isClientSide() &&
       !originalRequest?.url?.includes('/sign-in') &&
+      !originalRequest?.url?.includes('/verify-email') &&
+      !originalRequest?.url?.includes('/forgot-password') &&
+      !originalRequest?.url?.includes('/reset-password') &&
       !error.response?.request.url.includes('/auth/refresh')
     ) {
       if (!isRefreshing) {
