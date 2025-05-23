@@ -57,7 +57,7 @@ export const SignUpForm = () => {
       queryClient.invalidateQueries({
         queryKey: [ReactQueryTags.USER],
       });
-      router.push('/stories/selection');
+      router.push('/email-confirmation');
     } else {
       notifications.show({
         title: 'Sign Up Failed',

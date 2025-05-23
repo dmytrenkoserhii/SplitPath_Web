@@ -1,3 +1,10 @@
+import { EmailVerifier } from '@/components/auth/email-verifier';
+import { Center } from '@mantine/core';
+
 export default function EmailVerificationPage() {
-  return <div>EmailVerificationPage</div>;
+  return (
+    <Center style={{ minHeight: '100vh' }}>
+      <EmailVerifier />
+    </Center>
+  );
 }

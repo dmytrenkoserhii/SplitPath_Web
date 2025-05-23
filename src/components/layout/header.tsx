@@ -9,6 +9,7 @@ import React from 'react';
 import { LogoutButton } from '../auth';
 import { NAVIGATION_LINKS } from '@/constants';
 import { NavigationLink } from './navigation-link';
+import { MdClose } from 'react-icons/md';
 
 interface HeaderProps {
   user: any;
@@ -20,6 +21,10 @@ export const Header = ({ user }: HeaderProps) => {
 
   const handleBurgerClick = () => {
     setNavbarOpen(!isNavbarOpen);
+  };
+
+  const handleVerificationClick = () => {
+    window.location.href = '/email-confirmation';
   };
 
   return (
@@ -49,6 +54,16 @@ export const Header = ({ user }: HeaderProps) => {
         </Group>
 
         <Group>
+        {user && !user.isEmailVerified && (
+            <Button
+            rightSection={<MdClose size={18} />}
+            variant='light'
+            color="red"
+            onClick={handleVerificationClick}
+          >
+            EMAIL NOT VERIFIED
+          </Button>
+          )}
           <Box style={{ display: isMobile ? 'none' : 'flex' }}>
             {!user ? (
               <Link href='/sign-in'>

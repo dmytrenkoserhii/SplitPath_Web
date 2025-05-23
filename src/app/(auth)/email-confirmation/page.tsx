@@ -1,3 +1,10 @@
+import { EmailConfirmationMessage } from '@/components/auth';
+import { Center } from '@mantine/core';
+
 export default function EmailConfirmationPage() {
-  return <div>EmailConfirmationPage</div>;
+  return (
+    <Center style={{ minHeight: '100vh' }}>
+      <EmailConfirmationMessage />
+    </Center>
+  );
 }
