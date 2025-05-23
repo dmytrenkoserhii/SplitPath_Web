@@ -1,3 +1,10 @@
+import { Center } from '@mantine/core';
+import { ResetPasswordForm } from '@/components/auth';
+
 export default function ResetPasswordPage() {
-  return <div>ResetPasswordPage</div>;
+  return (
+    <Center style={{ minHeight: '100vh' }}>
+      <ResetPasswordForm />
+    </Center>
+  );
 }
