@@ -5,6 +5,7 @@ import {
   ActionIcon,
   Box,
   Center,
+  LoadingOverlay,
   Paper,
   rem,
   ScrollArea,
@@ -20,16 +21,18 @@ interface ChatMessagesListProps {
   messages: PrivateMessage[];
   currentUserId: number;
   friend: User;
-  isFetchingNextPage: boolean;
   onScrollToTop: () => void;
+  isFetchingNextPage: boolean;
 }
 
+// TODO: I have a problem with scroll position when new messages are fetched
+// It moves you down a bit when the new messages are fetched
 export const ChatMessagesList = ({
   messages,
   currentUserId,
   friend,
-  isFetchingNextPage,
   onScrollToTop,
+  isFetchingNextPage,
 }: ChatMessagesListProps) => {
   const initialScrollDone = React.useRef(false);
   const hasUserScrolled = React.useRef(false);
@@ -51,22 +54,36 @@ export const ChatMessagesList = ({
         scrollToBottom();
         initialScrollDone.current = true;
       } else {
-        const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
-        const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
+        if (isFetchingNextPage) {
+          prevScrollHeightRef.current = scrollAreaRef.current.scrollHeight;
+          prevScrollTopRef.current = scrollAreaRef.current.scrollTop;
+        } else if (prevScrollHeightRef.current > 0 && messages.length > 0) {
+          const newScrollHeight = scrollAreaRef.current.scrollHeight;
+          const heightIncreasedBy =
+            newScrollHeight - prevScrollHeightRef.current;
 
-        if (isNearBottom) {
-          scrollToBottom();
+          scrollAreaRef.current.scrollTop =
+            prevScrollTopRef.current + heightIncreasedBy;
+
+          prevScrollHeightRef.current = 0;
+          prevScrollTopRef.current = 0;
+        } else {
+          const { scrollTop, scrollHeight, clientHeight } =
+            scrollAreaRef.current;
+          const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
+          if (isNearBottom) {
+            scrollToBottom();
+          }
         }
       }
     }
-    handleScroll();
-  }, [messages]);
+  }, [messages, isFetchingNextPage]);
 
   const handleScroll = () => {
     if (scrollAreaRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
 
-      if (hasUserScrolled.current && scrollTop < 200 && !isFetchingNextPage) {
+      if (hasUserScrolled.current && scrollTop < 100 && !isFetchingNextPage) {
         onScrollToTop();
       }
 
@@ -80,7 +97,13 @@ export const ChatMessagesList = ({
   };
 
   return (
-    <Paper w='100%' h='100%' withBorder>
+    <Paper w='100%' h='100%' withBorder style={{ position: 'relative' }}>
+      <LoadingOverlay
+        visible={isFetchingNextPage}
+        zIndex={100001}
+        overlayProps={{ radius: 'sm', blur: 1 }}
+      />
+
       <Stack h='100%' p='sm' data-testid='chat-messages-list'>
         {!Boolean(messages.length) && (
           <Center h='100%'>
