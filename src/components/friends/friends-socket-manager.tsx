@@ -10,7 +10,6 @@ import { Friend } from '@/types/friends';
 
 export const FriendsSocketManager = () => {
   const friendsSocket = React.useMemo(() => getFriendsSocket(), []);
-  console.log('friendsSocket', friendsSocket);
 
   const { data: userData } = useQuery<User>({
     queryKey: [ReactQueryTags.USER],

@@ -1,6 +1,7 @@
 import { Socket, io } from 'socket.io-client';
 
 let friendsSocket: Socket;
+let privateChatsSocket: Socket;
 
 export const getFriendsSocket = (): Socket => {
   if (!friendsSocket) {
@@ -13,4 +14,20 @@ export const getFriendsSocket = (): Socket => {
     });
   }
   return friendsSocket;
+};
+
+export const getPrivateChatsSocket = (): Socket => {
+  if (!privateChatsSocket) {
+    privateChatsSocket = io(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/private-chats`,
+      {
+        withCredentials: true,
+        transports: ['websocket', 'polling'],
+        extraHeaders: {
+          'Access-Control-Allow-Origin': 'http://localhost:3000',
+        },
+      }
+    );
+  }
+  return privateChatsSocket;
 };

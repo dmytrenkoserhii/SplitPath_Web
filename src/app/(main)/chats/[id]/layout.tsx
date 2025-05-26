@@ -1,22 +1,38 @@
 import { ServerError } from '@/components/auth';
+import { Paper, ScrollArea, GridCol, Grid } from '@mantine/core';
+import { redirect } from 'next/navigation';
 import { ChatsListHandler } from '@/components/chats/chats-list-handler';
-import { GridCol, Paper, ScrollArea, Grid } from '@mantine/core';
 
-export default async function ChatsPage() {
+export default async function ChatsLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: {
+    id: string;
+  };
+}) {
   try {
+    const { id } = await params;
+
+    if (!id) {
+      return redirect('/chats');
+    }
+
     return (
       <Grid>
-        <GridCol span={12}>
+        <GridCol span={3}>
           <Paper
+            withBorder
             p='sm'
             style={{ height: 'calc(100dvh - 60px - 60px - 35px)' }}
-            withBorder
           >
             <ScrollArea scrollbarSize={3} scrollHideDelay={2000} h='100%'>
-              <ChatsListHandler />
+              <ChatsListHandler id={Number(id)} />
             </ScrollArea>
           </Paper>
         </GridCol>
+        <GridCol span={9}>{children}</GridCol>
       </Grid>
     );
   } catch (error) {

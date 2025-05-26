@@ -25,6 +25,7 @@ export default async function FriendPage({ params }: FriendPageProps) {
   const { id } = await params;
   const userId = Number(id);
 
+  // TODO: add not-found page
   if (isNaN(userId)) {
     notFound();
   }
