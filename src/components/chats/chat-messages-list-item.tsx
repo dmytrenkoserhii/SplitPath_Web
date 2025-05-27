@@ -4,7 +4,6 @@ import { Stack, Paper, Group, Text } from '@mantine/core';
 import { PrivateMessage } from '@/types/chats';
 import { useInView } from 'react-intersection-observer';
 import React from 'react';
-import { useMarkMessagesAsRead } from '@/hooks/use-mark-messages-as-read';
 
 interface ChatMessagesListItemProps {
   message: PrivateMessage;
@@ -20,8 +19,8 @@ export const ChatMessagesListItem = ({
   const isCurrentUser = message.from.id === currentUserId;
 
   const { ref, inView } = useInView({
-    threshold: 0.5, // Mark as read when 50% of the item is visible
-    triggerOnce: true, // Only trigger once when it comes into view
+    threshold: 0.5,
+    triggerOnce: true,
   });
 
   React.useEffect(() => {

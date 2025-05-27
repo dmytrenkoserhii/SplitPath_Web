@@ -23,8 +23,6 @@ export const ChatsSocketManager = () => {
 
   React.useEffect(() => {
     const onNewPrivateMessage = (message: PrivateMessage) => {
-      console.log('new_private_message', message);
-
       if (!userData) {
         return;
       }
@@ -57,7 +55,6 @@ export const ChatsSocketManager = () => {
         }
       );
 
-      // Determine if the message was sent by the current user
       const isMessageSentByMe = message.from.id === userData.id;
 
       queryClient.setQueryData<ChatPreview[]>(
@@ -72,9 +69,8 @@ export const ChatsSocketManager = () => {
                     content: message.content,
                     createdAt: message.createdAt,
                     isRead: message.read,
-                    isSentByUser: isMessageSentByMe, // Use the determined flag
+                    isSentByUser: isMessageSentByMe,
                   } as ChatPreview['lastMessage'],
-                  // Only increment unreadCount if the message was NOT sent by the current user
                   unreadCount: isMessageSentByMe
                     ? chatPreview.unreadCount
                     : chatPreview.unreadCount + 1,
@@ -92,29 +88,12 @@ export const ChatsSocketManager = () => {
         readAt: string;
       }[]
     ) => {
-      console.log('messages_read', readStatuses);
-
       if (!userData) {
         return;
-      } // Collect unique chat partner IDs affected by these read statuses
+      }
 
       const affectedChatPartnerIds = new Set<number>();
-      console.log('affectedChatPartnerIds', readStatuses);
       readStatuses.forEach((status) => {
-        // Assuming the `userId` in readStatus is the reader's ID.
-        // We need to find the sender of the message to update their chat preview.
-        // This means we might need the message itself from the cache or more context.
-        // For now, let's assume if the current user sent the message, and it's marked read,
-        // it means the recipient (chat partner) read it.
-        // If the current user is the one who read the message, this update is for their own view.
-
-        // To accurately update, we need to know who the sender of the message is.
-        // The server sends `readStatuses` without the sender's ID of the original message.
-        // We might need to adjust the server to include `senderId` in `readStatus` or
-        // fetch the message from the cache to determine its sender.
-        // For simplicity, let's just mark the message as read in relevant chats.
-
-        // Update individual chat messages
         queryClient
           .getQueryCache()
           .getAll()
@@ -139,7 +118,7 @@ export const ChatsSocketManager = () => {
                         (rs) => rs.messageId === msg.id
                       );
                       if (status && !msg.read) {
-                        updated = true; // Determine if the message was sent by the current user // If it was, and the recipient (chat partner) read it, then mark it read for the current user's view. // If the current user is the reader (status.userId), then it was a message sent to them that they just read. // We primarily care about messages *sent by* the current user being read by the recipient.
+                        updated = true;
                         if (
                           msg.from.id === userData.id &&
                           chatPartnerId === status.userId
@@ -167,29 +146,16 @@ export const ChatsSocketManager = () => {
             let lastMessageIsRead = chatPreview.lastMessage?.isRead;
 
             readStatuses.forEach((status) => {
-              // Check if the read message belongs to this chat preview
-              // This requires a more robust way to link `messageId` to `chatPreview.userId`.
-              // We'll assume if the current user *is* the reader (status.userId), and the message was sent to them by this chat partner,
-              // then the unread count should decrease.
-              // If the current user *sent* the message, and it's now marked read, then the `isRead` status of the last message might change.
-
-              // If the message is part of this chat, and the current user read it
               if (status.userId === userData.id) {
-                // This means a message *from* this chat partner *to* the current user was read.
-                // We need to identify messages sent by `chatPreview.userId` to `userData.id`
-                // that were marked read in `readStatuses`.
-                // For simplicity, we just decrement the unread count as messages are marked read by the current user.
                 const queryState = queryClient
                   .getQueryCache()
                   .find<InfiniteData<PaginatedResponse<PrivateMessage>>>({
-                    // Explicitly type the find result
                     queryKey: [
                       ReactQueryTags.PRIVATE_CHAT_MESSAGES,
                       chatPreview.userId,
                     ],
                   });
 
-                // Check if queryState and its data exist before accessing pages
                 const messageWasFromThisChatPartner =
                   queryState?.state.data?.pages.some((page) =>
                     page.items.some(
@@ -203,7 +169,7 @@ export const ChatsSocketManager = () => {
                 if (messageWasFromThisChatPartner && newUnreadCount > 0) {
                   newUnreadCount = Math.max(0, newUnreadCount - 1);
                 }
-              } // If the current user sent the message and it was read by the chat partner
+              }
 
               if (
                 chatPreview.lastMessage &&
@@ -211,7 +177,6 @@ export const ChatsSocketManager = () => {
                 chatPreview.lastMessage.isSentByUser &&
                 status.userId === chatPreview.userId
               ) {
-                // The chat partner read it
                 lastMessageIsRead = true;
               }
             });
@@ -237,8 +202,6 @@ export const ChatsSocketManager = () => {
       receiverId: string;
       isTyping: boolean;
     }) => {
-      console.log('typing_status', userId, receiverId, isTyping);
-
       if (!userData) {
         return;
       }

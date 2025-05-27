@@ -14,7 +14,6 @@ export const ChatsListItem = ({
   isOpen,
   onlineStatus,
 }: ChatsListItemProps) => {
-  console.log(chat);
   return (
     <Link
       href={`/chats/${chat.userId}`}

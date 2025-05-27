@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React from 'react';
 import { TextInput, ActionIcon, Group, Paper } from '@mantine/core';
 import { Send } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
@@ -21,7 +21,7 @@ export function ChatInput({ receiverId, onMessageSent }: ChatInputProps) {
   const [isFocused, setIsFocused] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const privateChatsSocket = useMemo(() => getPrivateChatsSocket(), []);
+  const privateChatsSocket = React.useMemo(() => getPrivateChatsSocket(), []);
 
   const sendMessageMutation = useMutation({
     mutationFn: (newMessage: CreateMessagePayload) =>
@@ -49,7 +49,7 @@ export function ChatInput({ receiverId, onMessageSent }: ChatInputProps) {
     });
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (debouncedMessage && !isTyping && isFocused) {
       privateChatsSocket.emit('typing_status_change', {
         receiverId: receiverId,
@@ -71,7 +71,7 @@ export function ChatInput({ receiverId, onMessageSent }: ChatInputProps) {
     }
   }, [debouncedMessage, receiverId, privateChatsSocket, isTyping, isFocused]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     return () => {
       if (isTyping) {
         privateChatsSocket.emit('typing_status_change', {
@@ -82,7 +82,7 @@ export function ChatInput({ receiverId, onMessageSent }: ChatInputProps) {
     };
   }, [isTyping, receiverId, privateChatsSocket]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (message === '' && !sendMessageMutation.isPending && inputRef.current) {
       inputRef.current.focus();
     }
