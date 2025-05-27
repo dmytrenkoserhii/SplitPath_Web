@@ -25,7 +25,7 @@ export function ChatInput({ receiverId, onMessageSent }: ChatInputProps) {
 
   const sendMessageMutation = useMutation({
     mutationFn: (newMessage: CreateMessagePayload) =>
-      chatsService.sendMessage(newMessage),
+      chatsService().sendMessage(newMessage),
     onSuccess: () => {
       setMessage('');
       if (onMessageSent) {

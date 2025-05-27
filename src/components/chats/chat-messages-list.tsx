@@ -16,6 +16,7 @@ import React from 'react';
 import { ChatMessagesListItem } from './chat-messages-list-item';
 import { User } from '@/types/user';
 import { ChevronDown } from 'lucide-react';
+import { useMarkMessagesAsRead } from '@/hooks';
 
 interface ChatMessagesListProps {
   messages: PrivateMessage[];
@@ -34,6 +35,8 @@ export const ChatMessagesList = ({
   onScrollToTop,
   isFetchingNextPage,
 }: ChatMessagesListProps) => {
+  const { addMessageToMarkAsRead } = useMarkMessagesAsRead();
+
   const initialScrollDone = React.useRef(false);
   const hasUserScrolled = React.useRef(false);
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
@@ -130,6 +133,7 @@ export const ChatMessagesList = ({
                   key={message.id}
                   message={message}
                   currentUserId={currentUserId}
+                  addMessageToMarkAsRead={addMessageToMarkAsRead}
                 />
               ))}
               <div ref={messagesEndRef} />

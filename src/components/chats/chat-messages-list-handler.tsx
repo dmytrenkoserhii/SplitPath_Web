@@ -34,7 +34,7 @@ export const ChatMessagesListHandler = ({
   >({
     queryKey: [ReactQueryTags.PRIVATE_CHAT_MESSAGES, friend.id],
     queryFn: async ({ pageParam }) => {
-      return chatsService.getChatMessages(friend.id, pageParam, 20);
+      return chatsService().getChatMessages(friend.id, pageParam, 20);
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {

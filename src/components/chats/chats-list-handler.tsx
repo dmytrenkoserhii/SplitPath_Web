@@ -17,7 +17,7 @@ export const ChatsListHandler = ({ id }: ChatsListHandlerProps) => {
     error,
   } = useQuery({
     queryKey: [ReactQueryTags.CHAT_PREVIEWS],
-    queryFn: () => chatsService.getChatPreviews(),
+    queryFn: () => chatsService().getChatPreviews(),
   });
 
   const { data: onlineStatuses, isLoading: isOnlineStatusLoading } = useQuery<{
