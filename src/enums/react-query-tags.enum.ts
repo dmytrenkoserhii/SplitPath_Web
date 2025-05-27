@@ -6,4 +6,7 @@ export enum ReactQueryTags {
   FRIEND_REQUESTS_OUTGOING = 'friendRequestsOutgoing',
   FRIEND_REQUESTS_REJECTED_INCOMING = 'friendRequestsRejectedIncoming',
   FRIEND_REQUESTS_REJECTED_OUTGOING = 'friendRequestsRejectedOutgoing',
+
+  PRIVATE_CHAT_MESSAGES = 'privateChatMessages',
+  CHAT_PREVIEWS = 'chatPreviews',
 }
