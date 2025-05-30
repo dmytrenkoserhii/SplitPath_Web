@@ -1,111 +1,84 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { z } from 'zod';
 import {
-  Anchor,
   Button,
-  Group,
-  Paper,
   Stack,
   TextInput,
-  Title,
   Text,
 } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import Link from 'next/link';
-import { authService } from '@/services';
+import { useMutation } from '@tanstack/react-query';
+import { ForgotPasswordSchema, ForgotPasswordSchemaType } from '@/schemas/auth/forgot-password-form.schema';
 
-const ForgotPasswordSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address' }),
-});
+interface ForgotPasswordFormProps {
+  handleForgotPassword: (email: string) => Promise<{ success: boolean; error: string }>;
+}
 
-type ForgotPasswordSchemaType = z.infer<typeof ForgotPasswordSchema>;
-
-export const ForgotPasswordForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const router = useRouter();
-
+export const ForgotPasswordForm = ({ handleForgotPassword }: ForgotPasswordFormProps) => {
   const form = useForm<ForgotPasswordSchemaType>({
     validate: zodResolver(ForgotPasswordSchema),
     initialValues: {
       email: '',
     },
+    validateInputOnChange: true,
   });
 
-  const handleSubmit = form.onSubmit(async (values) => {
-    setIsLoading(true);
-    try {
-      const { forgotPassword } = authService();
-      const result = await forgotPassword(values.email);
-
-      if (result.response.ok) {
-        setIsSubmitted(true);
-      } else {
-        notifications.show({
-          title: 'Error',
-          message: result.response.statusText || 'Failed to process your request',
-          color: 'red',
-        });
+  const { mutate: forgotPassword, isPending, isSuccess } = useMutation({
+    mutationFn: async (email: string) => {
+      const result = await handleForgotPassword(email);
+      if (!result.success) {
+        throw new Error(result.error);
       }
-    } catch (error) {
+      return result;
+    },
+    onError: (error: Error) => {
       notifications.show({
         title: 'Error',
-        message: 'An unexpected error occurred',
+        message: error.message || 'Failed to process your request',
         color: 'red',
       });
-      console.error('Error during password reset request:', error);
-    } finally {
-      setIsLoading(false);
     }
   });
 
+  const handleSubmit = form.onSubmit((values) => {
+    forgotPassword(values.email);
+  });
+
+  if (isSuccess) {
+    return (
+      <Stack gap="md">
+        <Text ta="center">
+          We&apos;ve sent password reset instructions to your email address.
+          Please check your inbox and follow the instructions to reset your password.
+        </Text>
+        
+      </Stack>
+    );
+  }
+
+  const isEmailValid = !form.errors.email && form.values.email.length > 0;
+
   return (
-    <Paper
-      shadow='md'
-      radius='md'
-      p='xl'
-      withBorder
-      w={{ base: '90%', sm: 450 }}
-    >
-      <Title order={2} ta='center' mt='md' mb={50}>
-        Reset Password
-      </Title>
+    <form onSubmit={handleSubmit}>
+      <Stack gap='md'>
+        <TextInput
+          label='Email'
+          placeholder='your@email.com'
+          required
+          {...form.getInputProps('email')}
+        />
 
-      {isSubmitted ? (
-        <Stack gap="md">
-          <Text ta="center">
-            If an account with this email exists, we&apos;ve sent instructions to reset your password.
-          </Text>
-          <Button onClick={() => router.push('/sign-in')} fullWidth mt="xl">
-            Return to Sign In
-          </Button>
-        </Stack>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <Stack gap='md'>
-            <TextInput
-              label='Email'
-              placeholder='your@email.com'
-              required
-              {...form.getInputProps('email')}
-            />
-
-            <Button type='submit' fullWidth mt='xl' loading={isLoading}>
-              Send Reset Instructions
-            </Button>
-          </Stack>
-
-          <Group justify='center' mt='md'>
-            <Anchor component={Link} href='/sign-in' size='sm'>
-              Return to Sign In
-            </Anchor>
-          </Group>
-        </form>
-      )}
-    </Paper>
+        <Button 
+          type='submit' 
+          fullWidth 
+          mt='xl' 
+          loading={isPending}
+          disabled={!isEmailValid}
+        >
+          Send Reset Instructions
+        </Button>
+      </Stack>
+    </form>
   );
 };

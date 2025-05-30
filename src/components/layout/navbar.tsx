@@ -4,13 +4,17 @@ import { Stack } from '@mantine/core';
 import { useNavbarState } from '@/hooks';
 import { NAVIGATION_LINKS } from '@/constants';
 import { NavigationLink } from '@/components/layout/navigation-link';
-import { LogoutButton } from '@/components/auth';
+import { LogoutButton, EmailVerificationAlert } from '@/components/auth';
 import { useMediaQuery } from '@mantine/hooks';
+
+interface NavbarProps {
+  user: any
+}
 
 // I don't use AppShell.Navbar because I don't see how it should be used
 // with Next. We need to pass a 'open' value to the collapsed prop. in AppShell.
 // But AppShell is located in the layout.tsx file, and layout.tsx is server component.
-export const Navbar = () => {
+export const Navbar = ({ user }: NavbarProps) => {
   const { isNavbarOpen } = useNavbarState();
   const isMobile = useMediaQuery('(max-width: 48rem)');
 
@@ -33,6 +37,9 @@ export const Navbar = () => {
     >
       <Stack justify='space-between' h='100%'>
         <Stack>
+          {user && !user.isEmailVerified && (
+            <EmailVerificationAlert />
+          )}
           {NAVIGATION_LINKS.map((link) => (
             <NavigationLink key={link.href} link={link} />
           ))}

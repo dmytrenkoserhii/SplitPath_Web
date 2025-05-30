@@ -9,9 +9,6 @@ interface AuthApi {
   logout: (headers?: Headers) => Promise<XiorResponse<void>>;
   verifyAccessToken: (headers?: Headers) => Promise<XiorResponse<User>>;
   refreshAccessToken: (headers?: Headers) => Promise<XiorResponse<void>>;
-  googleAuth: () => void;
-  verifyEmail: (token: string) => Promise<XiorResponse<void>>;
-  resendVerificationEmail: () => Promise<XiorResponse<void>>;
   forgotPassword: (email: string) => Promise<XiorResponse<void>>;
   resetPassword: (token: string, password: string) => Promise<XiorResponse<void>>;
 }
@@ -23,9 +20,6 @@ export const authService = (): AuthApi => {
     logout,
     verifyAccessToken,
     refreshAccessToken,
-    googleAuth,
-    verifyEmail,
-    resendVerificationEmail,
     forgotPassword,
     resetPassword,
   };
@@ -37,10 +31,6 @@ const signUp = (data: SignUpDataType) => {
     password: data.password,
     username: data.username,
   });
-};
-
-const googleAuth = () => {
-  window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`;
 };
 
 const signIn = (data: SignInFormSchemaType) => {
@@ -63,23 +53,11 @@ const refreshAccessToken = (headers?: Headers) => {
   return xiorClient.get<void>(`auth/refresh`, { headers });
 };
 
-const verifyEmail = (token: string) => {
-  console.log('Attempting to verify email with token:', token);
-  console.log('Full URL being called:', `${process.env.NEXT_PUBLIC_BACKEND_URL}/verify-email`);
-  return xiorClient.post<void>(`users/verify-email`, { token });
-};
-
-const resendVerificationEmail = () => {
-  return xiorClient.get<void>('users/resend-verification');
-};
-
 const forgotPassword = (email: string) => {
-  console.log('Attempting to send forgot password email:', email);
   return xiorClient.post<void>(`auth/forgot-password`, { email });
 };
 
 const resetPassword = (token: string, password: string) => {
-  console.log('Attempting to reset password with token:', token);
   return xiorClient.post<void>(`auth/reset-password`, { 
     token,
     password 

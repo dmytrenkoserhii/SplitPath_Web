@@ -122,8 +122,7 @@ export const SignUpForm = () => {
 
       <Divider label='Or continue with' labelPosition='center' my='lg' />
 
-      <Button variant='outline' fullWidth onClick={() => authService().googleAuth()}>
-        {/* TODO: Implement Google Sign Up */}
+      <Button variant='outline' fullWidth onClick={() => router.push(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`)}>
         Google
       </Button>
 

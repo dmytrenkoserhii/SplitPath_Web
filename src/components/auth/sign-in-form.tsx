@@ -111,7 +111,7 @@ export const SignInForm = () => {
       <Button
         variant='outline'
         fullWidth
-        onClick={() => authService().googleAuth()}
+        onClick={() => router.push(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`)}
         loading={isLoading}
       >
         Google

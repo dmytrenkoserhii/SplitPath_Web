@@ -6,10 +6,9 @@ import { ThemeToggle } from '../ui';
 import { useNavbarState } from '@/hooks';
 import Link from 'next/link';
 import React from 'react';
-import { LogoutButton } from '../auth';
+import { LogoutButton, EmailVerificationAlert } from '../auth';
 import { NAVIGATION_LINKS } from '@/constants';
 import { NavigationLink } from './navigation-link';
-import { MdClose } from 'react-icons/md';
 
 interface HeaderProps {
   user: any;
@@ -21,10 +20,6 @@ export const Header = ({ user }: HeaderProps) => {
 
   const handleBurgerClick = () => {
     setNavbarOpen(!isNavbarOpen);
-  };
-
-  const handleVerificationClick = () => {
-    window.location.href = '/email-confirmation';
   };
 
   return (
@@ -53,16 +48,9 @@ export const Header = ({ user }: HeaderProps) => {
           ))}
         </Group>
 
-        <Group>
-        {user && !user.isEmailVerified && (
-            <Button
-            rightSection={<MdClose size={18} />}
-            variant='light'
-            color="red"
-            onClick={handleVerificationClick}
-          >
-            EMAIL NOT VERIFIED
-          </Button>
+        <Group style={{ display: isMobile ? 'none' : 'flex' }}>
+          {user && !user.isEmailVerified && (
+            <EmailVerificationAlert w="auto" />
           )}
           <Box style={{ display: isMobile ? 'none' : 'flex' }}>
             {!user ? (
