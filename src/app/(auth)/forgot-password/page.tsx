@@ -1,20 +1,6 @@
 import { Anchor, Center, Group, Paper, Title } from '@mantine/core';
 import { ForgotPasswordForm } from '@/components/auth';
-import { authService } from '@/services';
 import Link from 'next/link';
-
-async function handleForgotPassword(email: string) {
-  'use server'
-  
-  try {
-    const { forgotPassword } = authService();
-    const result = await forgotPassword(email);
-    return { success: result.response.ok, error: result.response.statusText };
-  } catch (err) {
-    console.error('Forgot password error:', err);
-    return { success: false, error: 'An error occurred while processing your request' };
-  }
-}
 
 export default function ForgotPasswordPage() {
   return (
@@ -30,7 +16,7 @@ export default function ForgotPasswordPage() {
           Reset Password
         </Title>
         
-        <ForgotPasswordForm handleForgotPassword={handleForgotPassword} />
+        <ForgotPasswordForm />
 
         <Group justify='center' mt='md'>
           <Anchor component={Link} href='/sign-in' size='sm'>

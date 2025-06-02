@@ -9,9 +9,10 @@ import React from 'react';
 import { LogoutButton, EmailVerificationAlert } from '../auth';
 import { NAVIGATION_LINKS } from '@/constants';
 import { NavigationLink } from './navigation-link';
+import { User } from '@/types/user';
 
 interface HeaderProps {
-  user: any;
+  user: User;
 }
 
 export const Header = ({ user }: HeaderProps) => {

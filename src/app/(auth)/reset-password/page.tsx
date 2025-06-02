@@ -1,22 +1,19 @@
 import { Anchor, Center, Group, Paper, Title } from '@mantine/core';
 import { ResetPasswordForm } from '@/components/auth';
-import { authService } from '@/services';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-async function handleResetPassword(token: string, password: string) {
-  'use server'
-  
-  try {
-    const { resetPassword } = authService();
-    const result = await resetPassword(token, password);
-    return { success: result.response.ok, error: result.response.statusText };
-  } catch (err) {
-    console.error('Reset password error:', err);
-    return { success: false, error: 'An error occurred while resetting your password' };
-  }
+type Props = {
+  searchParams: { token?: string }
 }
 
-export default function ResetPasswordPage() {
+export default function ResetPasswordPage({ searchParams }: Props) {
+  const { token } = searchParams;
+
+  if (!token) {
+    redirect('/forgot-password');
+  }
+
   return (
     <Center style={{ minHeight: '100dvh' }}>
       <Paper
@@ -30,7 +27,7 @@ export default function ResetPasswordPage() {
           Create New Password
         </Title>
 
-        <ResetPasswordForm handleResetPassword={handleResetPassword} />
+        <ResetPasswordForm token={token} />
 
         <Group justify='center' mt='md'>
           <Anchor component={Link} href='/sign-in' size='sm'>

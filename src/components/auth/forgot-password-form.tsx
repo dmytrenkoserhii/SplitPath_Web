@@ -10,12 +10,9 @@ import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { ForgotPasswordSchema, ForgotPasswordSchemaType } from '@/schemas/auth/forgot-password-form.schema';
+import { authService } from '@/services';
 
-interface ForgotPasswordFormProps {
-  handleForgotPassword: (email: string) => Promise<{ success: boolean; error: string }>;
-}
-
-export const ForgotPasswordForm = ({ handleForgotPassword }: ForgotPasswordFormProps) => {
+export const ForgotPasswordForm = () => {
   const form = useForm<ForgotPasswordSchemaType>({
     validate: zodResolver(ForgotPasswordSchema),
     initialValues: {
@@ -26,16 +23,14 @@ export const ForgotPasswordForm = ({ handleForgotPassword }: ForgotPasswordFormP
 
   const { mutate: forgotPassword, isPending, isSuccess } = useMutation({
     mutationFn: async (email: string) => {
-      const result = await handleForgotPassword(email);
-      if (!result.success) {
-        throw new Error(result.error);
-      }
+      const { forgotPassword } = authService();
+      const result = await forgotPassword(email);
       return result;
     },
     onError: (error: Error) => {
       notifications.show({
         title: 'Error',
-        message: error.message || 'Failed to process your request',
+        message: error.message,
         color: 'red',
       });
     }
@@ -52,12 +47,9 @@ export const ForgotPasswordForm = ({ handleForgotPassword }: ForgotPasswordFormP
           We&apos;ve sent password reset instructions to your email address.
           Please check your inbox and follow the instructions to reset your password.
         </Text>
-        
       </Stack>
     );
   }
-
-  const isEmailValid = !form.errors.email && form.values.email.length > 0;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -74,7 +66,7 @@ export const ForgotPasswordForm = ({ handleForgotPassword }: ForgotPasswordFormP
           fullWidth 
           mt='xl' 
           loading={isPending}
-          disabled={!isEmailValid}
+          disabled={!form.isValid()}
         >
           Send Reset Instructions
         </Button>

@@ -28,6 +28,7 @@ import { ReactQueryTags } from '@/enums';
 export const SignUpForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { signUp } = authService();
 
   const form = useForm<SignUpFormSchemaType>({
     validate: zodResolver(SignUpFormSchema),
@@ -43,7 +44,6 @@ export const SignUpForm = () => {
   const handleSubmit = form.onSubmit(async (values) => {
     setIsLoading(true);
     const { username, email, password } = values;
-    const { signUp } = authService();
     const result = await signUp({ username, email, password });
     setIsLoading(false);
 
@@ -66,6 +66,10 @@ export const SignUpForm = () => {
       });
     }
   });
+
+  const handleGoogleSignUp = () => {
+    router.push(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`);
+  };
 
   return (
     <Paper
@@ -122,7 +126,12 @@ export const SignUpForm = () => {
 
       <Divider label='Or continue with' labelPosition='center' my='lg' />
 
-      <Button variant='outline' fullWidth onClick={() => router.push(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`)}>
+      <Button 
+        variant='outline' 
+        fullWidth 
+        onClick={handleGoogleSignUp}
+        loading={isLoading}
+      >
         Google
       </Button>
 

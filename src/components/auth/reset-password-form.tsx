@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {
   Button,
   PasswordInput,
@@ -12,14 +12,14 @@ import { notifications } from '@mantine/notifications';
 import Link from 'next/link';
 import { ResetPasswordSchema, ResetPasswordSchemaType } from '@/schemas/auth/reset-password-form.schema';
 import { useMutation } from '@tanstack/react-query';
+import { authService } from '@/services';
 
-interface ResetPasswordFormProps {
-  handleResetPassword: (token: string, password: string) => Promise<{ success: boolean; error: string }>;
-}
+type ResetPasswordFormProps = {
+  token: string;
+};
 
-export const ResetPasswordForm = ({ handleResetPassword }: ResetPasswordFormProps) => {
+export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
   const router = useRouter();
-  const token = useSearchParams().get('token');
 
   const form = useForm<ResetPasswordSchemaType>({
     validate: zodResolver(ResetPasswordSchema),
@@ -31,10 +31,8 @@ export const ResetPasswordForm = ({ handleResetPassword }: ResetPasswordFormProp
 
   const { mutate: resetPassword, isPending, isSuccess } = useMutation({
     mutationFn: async ({ password }: { password: string }) => {
-      const result = await handleResetPassword(token!, password);
-      if (!result.success) {
-        throw new Error(result.error);
-      }
+      const { resetPassword } = authService();
+      const result = await resetPassword(token, password);
       return result;
     },
     onSuccess: () => {
@@ -45,16 +43,11 @@ export const ResetPasswordForm = ({ handleResetPassword }: ResetPasswordFormProp
     onError: (error: Error) => {
       notifications.show({
         title: 'Error',
-        message: error.message || 'Failed to reset password',
+        message: error.message,
         color: 'red',
       });
     }
   });
-
-  if (!token) {
-    router.push('/forgot-password');
-    return null;
-  }
 
   const handleSubmit = form.onSubmit((values) => {
     resetPassword({ password: values.password });
@@ -75,9 +68,6 @@ export const ResetPasswordForm = ({ handleResetPassword }: ResetPasswordFormProp
       </Stack>
     );
   }
-
-  const isFormValid = !form.errors.password && !form.errors.confirmPassword && 
-    form.values.password.length > 0 && form.values.confirmPassword.length > 0;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -101,7 +91,7 @@ export const ResetPasswordForm = ({ handleResetPassword }: ResetPasswordFormProp
           fullWidth 
           mt='xl' 
           loading={isPending}
-          disabled={!isFormValid}
+          disabled={!form.isValid()}
         >
           Reset Password
         </Button>

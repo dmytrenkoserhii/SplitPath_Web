@@ -5,4 +5,4 @@ export { RefreshAccessToken } from './refresh-access-token';
 export { LogoutButton } from './logout-button';
 export { ForgotPasswordForm } from './forgot-password-form';
 export { ResetPasswordForm } from './reset-password-form';
-export * from './email-verification-alert';
+export { EmailVerificationAlert } from './email-verification-alert';

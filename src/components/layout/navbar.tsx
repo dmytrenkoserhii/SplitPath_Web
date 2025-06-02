@@ -6,9 +6,10 @@ import { NAVIGATION_LINKS } from '@/constants';
 import { NavigationLink } from '@/components/layout/navigation-link';
 import { LogoutButton, EmailVerificationAlert } from '@/components/auth';
 import { useMediaQuery } from '@mantine/hooks';
+import { User } from '@/types/user';
 
 interface NavbarProps {
-  user: any
+  user: User;
 }
 
 // I don't use AppShell.Navbar because I don't see how it should be used
