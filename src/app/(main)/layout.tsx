@@ -22,7 +22,7 @@ export default async function MainLayout({
 
         <AppShell header={{ height: 60 }} footer={{ height: 60 }} padding='md'>
           <Header user={user} />
-          <Navbar />
+          <Navbar user={user} />
           <AppShellMain>{children}</AppShellMain>
           <Footer />
         </AppShell>

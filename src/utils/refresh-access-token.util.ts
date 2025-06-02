@@ -16,8 +16,7 @@ export const refreshAccessToken = async (
   response: NextResponse,
   headers: Headers
 ) => {
-  const { refreshAccessToken: refreshAccessTokenService } = authService();
-  const refreshAccessTokenResponse = await refreshAccessTokenService(headers);
+  const refreshAccessTokenResponse = await authService().refreshAccessToken(headers);
   const setCookieHeader = refreshAccessTokenResponse.headers
     .getSetCookie()
     .join('; ');

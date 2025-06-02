@@ -9,7 +9,8 @@ interface AuthApi {
   logout: (headers?: Headers) => Promise<XiorResponse<void>>;
   verifyAccessToken: (headers?: Headers) => Promise<XiorResponse<User>>;
   refreshAccessToken: (headers?: Headers) => Promise<XiorResponse<void>>;
-  googleAuth: () => void;
+  forgotPassword: (email: string) => Promise<XiorResponse<void>>;
+  resetPassword: (token: string, password: string) => Promise<XiorResponse<void>>;
 }
 
 export const authService = (): AuthApi => {
@@ -19,7 +20,8 @@ export const authService = (): AuthApi => {
     logout,
     verifyAccessToken,
     refreshAccessToken,
-    googleAuth,
+    forgotPassword,
+    resetPassword,
   };
 };
 
@@ -29,10 +31,6 @@ const signUp = (data: SignUpDataType) => {
     password: data.password,
     username: data.username,
   });
-};
-
-const googleAuth = () => {
-  window.location.href = `${BACKEND_URL}/auth/google`;
 };
 
 const signIn = (data: SignInFormSchemaType) => {
@@ -53,4 +51,15 @@ const verifyAccessToken = (headers?: Headers) => {
 
 const refreshAccessToken = (headers?: Headers) => {
   return xiorClient.get<void>(`auth/refresh`, { headers });
+};
+
+const forgotPassword = (email: string) => {
+  return xiorClient.post<void>(`auth/forgot-password`, { email });
+};
+
+const resetPassword = (token: string, password: string) => {
+  return xiorClient.post<void>(`auth/reset-password`, { 
+    token,
+    password 
+  });
 };

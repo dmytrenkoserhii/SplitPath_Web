@@ -13,8 +13,7 @@ import { extractAndParseCookies } from './extract-and-parse-cookies.util';
  * @returns A promise that resolves with the `NextResponse` including the cleared authentication cookies.
  */
 export const logout = async (response: NextResponse, headers: Headers) => {
-  const { logout } = authService();
-  const refreshAccessTokenResponse = await logout(headers);
+  const refreshAccessTokenResponse = await authService().logout(headers);
   const setCookieHeader = refreshAccessTokenResponse.headers
     .getSetCookie()
     .join('; ');

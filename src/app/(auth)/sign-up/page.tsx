@@ -3,7 +3,7 @@ import { SignUpForm } from '@/components/auth';
 
 export default function SignUpPage() {
   return (
-    <Center style={{ minHeight: '100vh' }}>
+    <Center style={{ minHeight: '100dvh' }}>
       <SignUpForm />
     </Center>
   );

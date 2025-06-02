@@ -6,12 +6,13 @@ import { ThemeToggle } from '../ui';
 import { useNavbarState } from '@/hooks';
 import Link from 'next/link';
 import React from 'react';
-import { LogoutButton } from '../auth';
+import { LogoutButton, EmailVerificationAlert } from '../auth';
 import { NAVIGATION_LINKS } from '@/constants';
 import { NavigationLink } from './navigation-link';
+import { User } from '@/types/user';
 
 interface HeaderProps {
-  user: any;
+  user: User;
 }
 
 export const Header = ({ user }: HeaderProps) => {
@@ -48,7 +49,10 @@ export const Header = ({ user }: HeaderProps) => {
           ))}
         </Group>
 
-        <Group>
+        <Group style={{ display: isMobile ? 'none' : 'flex' }}>
+          {user && !user.isEmailVerified && (
+            <EmailVerificationAlert w="auto" />
+          )}
           <Box style={{ display: isMobile ? 'none' : 'flex' }}>
             {!user ? (
               <Link href='/sign-in'>

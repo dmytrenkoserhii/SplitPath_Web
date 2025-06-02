@@ -65,8 +65,7 @@ xiorClient.interceptors.response.use(
         isRefreshing = true;
 
         try {
-          const { refreshAccessToken } = authService();
-          await refreshAccessToken();
+          await authService().refreshAccessToken();
           isRefreshing = false;
           processQueue(null);
           return xiorClient.request(originalRequest as XiorRequestConfig);

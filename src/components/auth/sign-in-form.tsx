@@ -25,7 +25,7 @@ import { ReactQueryTags } from '@/enums';
 export const SignInForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
+  
   const form = useForm<SignInFormSchemaType>({
     validate: zodResolver(SignInFormSchema),
     initialValues: {
@@ -33,12 +33,11 @@ export const SignInForm = () => {
       password: '',
     },
   });
-
+  
   const handleSubmit = form.onSubmit(async (values) => {
     setIsLoading(true);
     try {
-      const { signIn } = authService();
-      const result = await signIn(values);
+      const result = await authService().signIn(values);
 
       if (result.response.ok) {
         queryClient.invalidateQueries({
@@ -65,6 +64,10 @@ export const SignInForm = () => {
       setIsLoading(false);
     }
   });
+
+  const handleGoogleSignIn = () => {
+    router.push(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`);
+  };
 
   return (
     <Paper
@@ -111,7 +114,7 @@ export const SignInForm = () => {
       <Button
         variant='outline'
         fullWidth
-        onClick={() => authService().googleAuth()}
+        onClick={handleGoogleSignIn}
         loading={isLoading}
       >
         Google

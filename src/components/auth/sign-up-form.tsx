@@ -43,8 +43,7 @@ export const SignUpForm = () => {
   const handleSubmit = form.onSubmit(async (values) => {
     setIsLoading(true);
     const { username, email, password } = values;
-    const { signUp } = authService();
-    const result = await signUp({ username, email, password });
+    const result = await authService().signUp({ username, email, password });
     setIsLoading(false);
 
     if (result.response.ok) {
@@ -57,7 +56,7 @@ export const SignUpForm = () => {
       queryClient.invalidateQueries({
         queryKey: [ReactQueryTags.USER],
       });
-      router.push('/stories/selection');
+      router.push('/email-confirmation');
     } else {
       notifications.show({
         title: 'Sign Up Failed',
@@ -66,6 +65,10 @@ export const SignUpForm = () => {
       });
     }
   });
+
+  const handleGoogleSignUp = () => {
+    router.push(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`);
+  };
 
   return (
     <Paper
@@ -122,8 +125,12 @@ export const SignUpForm = () => {
 
       <Divider label='Or continue with' labelPosition='center' my='lg' />
 
-      <Button variant='outline' fullWidth onClick={() => authService().googleAuth()}>
-        {/* TODO: Implement Google Sign Up */}
+      <Button 
+        variant='outline' 
+        fullWidth 
+        onClick={handleGoogleSignUp}
+        loading={isLoading}
+      >
         Google
       </Button>
 

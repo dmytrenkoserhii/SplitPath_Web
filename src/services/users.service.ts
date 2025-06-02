@@ -8,6 +8,8 @@ interface UsersApi {
   findOneById: (id: number) => Promise<XiorResponse<User>>;
   findOneByEmail: (email: string) => Promise<XiorResponse<User | null>>;
   deleteById: (id: number) => Promise<XiorResponse<{ deleted: boolean }>>;
+  verifyEmail: (token: string) => Promise<XiorResponse<void>>;
+  resendVerificationEmail: () => Promise<XiorResponse<void>>;
 }
 
 export const usersService = (): UsersApi => {
@@ -17,6 +19,8 @@ export const usersService = (): UsersApi => {
     findOneById,
     findOneByEmail,
     deleteById,
+    verifyEmail,
+    resendVerificationEmail,
   };
 };
 
@@ -38,4 +42,12 @@ const findOneByEmail = (email: string) => {
 
 const deleteById = (id: number) => {
   return xiorClient.delete<{ deleted: boolean }>(`users/${id}`);
+};
+
+const verifyEmail = (token: string) => {
+  return xiorClient.post<void>(`users/verify-email`, { token });
+};
+
+const resendVerificationEmail = () => {
+  return xiorClient.get<void>('users/resend-verification');
 };
