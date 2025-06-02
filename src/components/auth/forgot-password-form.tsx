@@ -23,8 +23,7 @@ export const ForgotPasswordForm = () => {
 
   const { mutate: forgotPassword, isPending, isSuccess } = useMutation({
     mutationFn: async (email: string) => {
-      const { forgotPassword } = authService();
-      const result = await forgotPassword(email);
+      const result = await authService().forgotPassword(email);
       return result;
     },
     onError: (error: Error) => {

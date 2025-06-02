@@ -28,7 +28,6 @@ import { ReactQueryTags } from '@/enums';
 export const SignUpForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { signUp } = authService();
 
   const form = useForm<SignUpFormSchemaType>({
     validate: zodResolver(SignUpFormSchema),
@@ -44,7 +43,7 @@ export const SignUpForm = () => {
   const handleSubmit = form.onSubmit(async (values) => {
     setIsLoading(true);
     const { username, email, password } = values;
-    const result = await signUp({ username, email, password });
+    const result = await authService().signUp({ username, email, password });
     setIsLoading(false);
 
     if (result.response.ok) {

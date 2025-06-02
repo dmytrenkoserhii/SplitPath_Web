@@ -16,8 +16,7 @@ export default async function EmailVerificationPage({
 
   const { success, error } = await (async () => {
     try {
-      const { verifyEmail } = usersService();
-      const result = await verifyEmail(token);
+      const result = await usersService().verifyEmail(token);
       return { success: result.response.ok, error: null };
     } catch (err) {
       console.error('Email verification error:', err);

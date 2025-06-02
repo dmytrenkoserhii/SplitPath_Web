@@ -31,8 +31,7 @@ export const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
 
   const { mutate: resetPassword, isPending, isSuccess } = useMutation({
     mutationFn: async ({ password }: { password: string }) => {
-      const { resetPassword } = authService();
-      const result = await resetPassword(token, password);
+      const result = await authService().resetPassword(token, password);
       return result;
     },
     onSuccess: () => {

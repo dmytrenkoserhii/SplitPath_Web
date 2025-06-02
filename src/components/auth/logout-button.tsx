@@ -16,8 +16,7 @@ export const LogoutButton = () => {
   const router = useRouter();
 
   const onLogout = async () => {
-    const { logout } = authService();
-    const result = await logout();
+    const result = await authService().logout();
     if (result.response.ok) {
       queryClient.invalidateQueries({
         queryKey: [ReactQueryTags.USER],

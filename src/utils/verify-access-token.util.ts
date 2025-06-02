@@ -8,7 +8,6 @@ import { authService } from '@/services';
  * @returns A promise that resolves with the data from the verification API response.
  */
 export const verifyAccessToken = async (headers: Headers) => {
-  const { verifyAccessToken: verifyAccessTokenService } = authService();
-  const result = await verifyAccessTokenService(headers);
+  const result = await authService().verifyAccessToken(headers);
   return result.data;
 };

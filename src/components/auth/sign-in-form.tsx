@@ -25,8 +25,7 @@ import { ReactQueryTags } from '@/enums';
 export const SignInForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { signIn } = authService();
-
+  
   const form = useForm<SignInFormSchemaType>({
     validate: zodResolver(SignInFormSchema),
     initialValues: {
@@ -34,11 +33,11 @@ export const SignInForm = () => {
       password: '',
     },
   });
-
+  
   const handleSubmit = form.onSubmit(async (values) => {
     setIsLoading(true);
     try {
-      const result = await signIn(values);
+      const result = await authService().signIn(values);
 
       if (result.response.ok) {
         queryClient.invalidateQueries({
