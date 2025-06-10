@@ -1,0 +1,42 @@
+.card {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.title {
+  font-size: var(--mantine-font-size-lg);
+  line-height: 1.2;
+  margin-bottom: var(--mantine-spacing-md);
+}
+
+.description {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  margin-bottom: var(--mantine-spacing-md);
+}
+
+.button {
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover .button {
+  opacity: 1;
+} 
