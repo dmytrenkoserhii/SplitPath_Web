@@ -1,20 +1,18 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
 import { Button, Modal, Stack, TextInput, Textarea } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { CreateTopicSchema, CreateTopicSchemaType } from '@/schemas/stories';
 import { storyTopicsService } from '@/services/story-topics.service';
 
 export const CreateTopicForm = () => {
   const [opened, { open, close }] = useDisclosure(false);
-  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const form = useForm<CreateTopicSchemaType>({
     validate: zodResolver(CreateTopicSchema),
@@ -29,7 +27,7 @@ export const CreateTopicForm = () => {
       return await storyTopicsService().create(values);
     },
     onSuccess: () => {
-      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ['story-topics'] });
       notifications.show({
         title: 'Topic created',
         message: 'Topic created successfully',
@@ -53,25 +51,25 @@ export const CreateTopicForm = () => {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="Authentication">
+      <Modal opened={opened} onClose={close} title="Create New Story Topic">
         <form onSubmit={handleSubmit}>
           <Stack>
             <TextInput
               required
-              label="Name"
-              placeholder="Enter topic name"
+              label="Topic Name"
+              placeholder="e.g., Medieval Fantasy, Space Adventure, Detective Mystery"
               {...form.getInputProps('name')}
             />
 
             <Textarea
               required
-              label="Description"
-              placeholder="Enter topic description"
+              label="Story Generation Guide"
+              placeholder="Describe the theme, setting, and elements you want AI to use when generating stories. This description guides the AI in creating unique narratives, characters, and plot elements."
               minRows={3}
               {...form.getInputProps('description')}
             />
 
-            <Button type="submit" color="orange" loading={isPending} disabled={!form.isValid()}>
+            <Button type="submit" color="tertiary" loading={isPending} disabled={!form.isValid()}>
               Create Topic
             </Button>
           </Stack>

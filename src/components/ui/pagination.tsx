@@ -2,14 +2,14 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { Center, Pagination } from '@mantine/core';
+import { Center, Pagination as MantinePagination } from '@mantine/core';
 
-interface StoriesPaginationProps {
+interface PaginationProps {
   currentPage: number;
   totalPages: number;
 }
 
-export const StoriesPagination = ({ currentPage, totalPages }: StoriesPaginationProps) => {
+export const Pagination = ({ currentPage, totalPages }: PaginationProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -22,7 +22,7 @@ export const StoriesPagination = ({ currentPage, totalPages }: StoriesPagination
 
   return (
     <Center mt="xl">
-      <Pagination total={totalPages} value={currentPage} onChange={handlePageChange} />
+      <MantinePagination total={totalPages} value={currentPage} onChange={handlePageChange} />
     </Center>
   );
 };

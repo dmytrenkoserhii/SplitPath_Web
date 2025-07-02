@@ -8,7 +8,7 @@ interface StoryTopicsApi {
   findAll: () => Promise<StoryTopic[]>;
   create: (data: CreateTopicSchemaType) => Promise<StoryTopic>;
   update: (id: number, data: CreateTopicSchemaType) => Promise<StoryTopic>;
-  remove: (id: number) => Promise<XiorResponse<StoryTopic>>;
+  deleteTopic: (id: number) => Promise<XiorResponse<StoryTopic>>;
 }
 
 export const storyTopicsService = (): StoryTopicsApi => {
@@ -16,7 +16,7 @@ export const storyTopicsService = (): StoryTopicsApi => {
     findAll,
     create,
     update,
-    remove,
+    deleteTopic,
   };
 };
 
@@ -35,6 +35,6 @@ const update = async (id: number, data: CreateTopicSchemaType) => {
   return response.data;
 };
 
-const remove = async (id: number) => {
+const deleteTopic = async (id: number) => {
   return xiorClient.delete<StoryTopic>(`story-topics/${id}`);
 };

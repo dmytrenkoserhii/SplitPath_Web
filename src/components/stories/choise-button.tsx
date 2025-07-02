@@ -2,7 +2,7 @@
 
 import { Button } from '@mantine/core';
 
-import styles from './story-segment.module.css';
+import styles from './story-segment-card.module.css';
 
 interface ChoiceButtonProps {
   choice: string;
@@ -24,7 +24,7 @@ export function ChoiceButton({
   return (
     <Button
       variant={isSelected ? 'filled' : 'outline'}
-      color={isSelected ? 'green' : shouldShowActiveChoices ? 'orange' : 'gray'}
+      color={isSelected ? 'green' : shouldShowActiveChoices ? 'tertiary' : 'gray'}
       size="sm"
       onClick={() => (shouldShowActiveChoices ? onChoiceSelect(choice) : undefined)}
       disabled={isDisabled}

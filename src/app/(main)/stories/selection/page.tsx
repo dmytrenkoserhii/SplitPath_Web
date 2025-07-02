@@ -10,7 +10,7 @@ export default async function StorySelection() {
 
     return (
       <Box>
-        <Title c="orange" ta="center" mb="md">
+        <Title c="tertiary" ta="center" mb="md">
           Story Selection
         </Title>
         <StoryTopicCardsList topics={topics} />

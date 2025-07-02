@@ -1,40 +1,35 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
-import { useRouter } from 'next/navigation';
-
-import { Box, Stack, Text, Title } from '@mantine/core';
+import { Box, Center, Loader, Stack, Text, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+import { ServerError } from '@/components/auth';
 import { storiesService, storySegmentsService } from '@/services';
-import { Story } from '@/types/story';
 
-import { LoadingState } from './loading-state';
-import { StorySegmentCard } from './story-segment';
+import { StorySegmentCard } from './story-segment-card';
 
 interface StoryContentProps {
-  story: Story;
+  storyId: number;
 }
 
-export function StoryContent({ story }: StoryContentProps) {
-  const router = useRouter();
-  const generationInitiatedRef = useRef(false);
-  const storyEndRef = useRef<HTMLDivElement>(null);
+export function StoryContent({ storyId }: StoryContentProps) {
+  const queryClient = useQueryClient();
 
-  const existingSegments = story.segments || [];
-  const totalSegments = story.numberOfSegments || 10;
-
-  const currentSegmentCount = existingSegments.length;
-  const isStoryComplete = currentSegmentCount >= totalSegments;
-
-  const shouldAutoGenerate = currentSegmentCount === 0;
-  const previousSegmentCountRef = useRef(currentSegmentCount);
+  const {
+    data: story,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['story', storyId],
+    queryFn: () => storiesService().findOneById(storyId),
+  });
 
   const { mutate: generateInitialSegment, isPending: isGeneratingInitial } = useMutation({
-    mutationFn: () => storiesService().generateInitialSegment(story.id),
+    mutationFn: () => storiesService().generateInitialSegment(storyId),
     onSuccess: () => {
       notifications.show({
         title: 'Adventure Begins!',
@@ -42,7 +37,7 @@ export function StoryContent({ story }: StoryContentProps) {
         color: 'green',
       });
 
-      router.push(`/stories/${story.id}`);
+      queryClient.invalidateQueries({ queryKey: ['story', storyId] });
     },
     onError: (error: Error) => {
       notifications.show({
@@ -55,29 +50,39 @@ export function StoryContent({ story }: StoryContentProps) {
 
   const { mutate: selectChoice, isPending: isProcessingChoice } = useMutation({
     mutationFn: async ({ segmentId, choice }: { segmentId: number; choice: string }) => {
-      await storySegmentsService().update(segmentId, story.id, { selectedChoice: choice });
+      await storySegmentsService().update(segmentId, storyId, { selectedChoice: choice });
 
-      const segmentsAfterChoice = currentSegmentCount;
+      if (!story) throw new Error('Story not found');
+
+      const segmentsAfterChoice = story.segments.length;
       const nextSegmentNumber = segmentsAfterChoice + 1;
 
-      if (nextSegmentNumber < totalSegments) {
-        return storiesService().generateNextSegment(story.id);
-      } else if (nextSegmentNumber === totalSegments) {
-        return storiesService().generateFinalSegment(story.id);
-      } else {
-        throw new Error('Story is already complete');
+      if (nextSegmentNumber < story.numberOfSegments) {
+        return storiesService().generateNextSegment(storyId);
+      } else if (nextSegmentNumber === story.numberOfSegments) {
+        return storiesService().generateFinalSegment(storyId);
       }
+      throw new Error('Story is already complete');
     },
     onSuccess: () => {
-      const nextSegmentNumber = currentSegmentCount + 1;
+      if (!story) return;
 
-      router.refresh();
+      const nextSegmentNumber = story.segments.length + 1;
 
-      if (nextSegmentNumber === totalSegments) {
+      queryClient.invalidateQueries({ queryKey: ['story', storyId] });
+
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
+      }, 100);
+
+      if (nextSegmentNumber === story.numberOfSegments) {
         notifications.show({
           title: 'Story Complete!',
           message: 'Your adventure has reached its conclusion!',
-          color: 'orange',
+          color: 'tertiary',
         });
       }
     },
@@ -91,41 +96,43 @@ export function StoryContent({ story }: StoryContentProps) {
   });
 
   useEffect(() => {
-    if (shouldAutoGenerate && !isGeneratingInitial && !generationInitiatedRef.current) {
-      generationInitiatedRef.current = true;
+    if (story && story.segments.length === 0 && !isGeneratingInitial) {
       generateInitialSegment();
     }
-  }, [shouldAutoGenerate, isGeneratingInitial, generateInitialSegment]);
+  }, [story, isGeneratingInitial, generateInitialSegment]);
 
-  useEffect(() => {
-    if (currentSegmentCount > previousSegmentCountRef.current) {
-      setTimeout(() => {
-        storyEndRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'end',
-        });
-      }, 100);
-    }
-    previousSegmentCountRef.current = currentSegmentCount;
-  }, [currentSegmentCount]);
+  if (isLoading) {
+    return (
+      <Center>
+        <Stack align="center" gap="md">
+          <Loader size="xl" color="tertiary" />
+          <Title order={3}>Loading Story...</Title>
+        </Stack>
+      </Center>
+    );
+  }
+
+  if (error || !story) {
+    return <ServerError error={error || new Error('Story not found')} />;
+  }
+
+  const isStoryComplete = story.segments.length >= story.numberOfSegments;
+
+  if (isGeneratingInitial && story.segments.length === 0) {
+    return (
+      <Center>
+        <Stack align="center" gap="md">
+          <Loader size="xl" color="tertiary" />
+          <Title order={3}>Starting Your Adventure...</Title>
+          <Text c="dimmed">Creating the beginning of your story</Text>
+        </Stack>
+      </Center>
+    );
+  }
 
   const handleChoiceSelect = (choice: string, segmentId: number) => {
     selectChoice({ segmentId, choice });
   };
-
-  if (isGeneratingInitial && currentSegmentCount === 0) {
-    return (
-      <LoadingState
-        title="Starting Your Adventure..."
-        message="Creating the beginning of your story"
-        size="xl"
-      />
-    );
-  }
-
-  const segmentsToDisplay = existingSegments.sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-  );
 
   return (
     <Stack gap="xl">
@@ -140,8 +147,8 @@ export function StoryContent({ story }: StoryContentProps) {
         )}
       </Box>
 
-      {segmentsToDisplay.map((segment, index) => {
-        const isLastSegment = index === segmentsToDisplay.length - 1;
+      {story.segments.map((segment, index) => {
+        const isLastSegment = index === story.segments.length - 1;
         const isCurrentSegment = isLastSegment && !segment.selectedChoice;
         const isFinalSegment = segment.choices.length === 0;
 
@@ -157,9 +164,14 @@ export function StoryContent({ story }: StoryContentProps) {
         );
       })}
 
-      {isProcessingChoice && <LoadingState title="" message="Processing your choice..." />}
-
-      <div ref={storyEndRef} style={{ height: '1px' }} />
+      {isProcessingChoice && (
+        <Center>
+          <Stack align="center" gap="md">
+            <Loader size="xl" color="tertiary" />
+            <Title order={3}>Processing your choice...</Title>
+          </Stack>
+        </Center>
+      )}
     </Stack>
   );
 }

@@ -1,16 +1,35 @@
 'use client';
 
-import { Stack } from '@mantine/core';
+import { Loader, Stack, Text } from '@mantine/core';
 
-import { StoryTopic } from '@/types/story/story-topic.interface';
+import { useQuery } from '@tanstack/react-query';
+
+import { storyTopicsService } from '@/services/story-topics.service';
 
 import { TopicCard } from './topic-card';
 
-interface TopicCardsListProps {
-  topics: StoryTopic[];
-}
+export const TopicCardsList = () => {
+  const {
+    data: topics,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['story-topics'],
+    queryFn: () => storyTopicsService().findAll(),
+  });
 
-export const TopicCardsList = ({ topics }: TopicCardsListProps) => {
+  if (isLoading) {
+    return <Loader mx="auto" />;
+  }
+
+  if (error) {
+    return <Text ta="center">Failed to load topics. Please try again later.</Text>;
+  }
+
+  if (!topics || topics.length === 0) {
+    return <Text ta="center">No topics available. Create your first topic above!</Text>;
+  }
+
   return (
     <Stack>
       {topics.map((topic) => (

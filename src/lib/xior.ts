@@ -1,4 +1,5 @@
-import xior, { XiorRequestConfig, XiorError } from 'xior';
+import xior, { XiorError, XiorRequestConfig } from 'xior';
+
 import { authService } from '@/services';
 import { isClientSide } from '@/utils';
 
@@ -90,5 +91,5 @@ xiorClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );

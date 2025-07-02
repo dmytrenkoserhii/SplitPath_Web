@@ -1,12 +1,10 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
 import { Button, Modal, Stack, TextInput, Textarea } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { CreateTopicSchema, CreateTopicSchemaType } from '@/schemas/stories';
 import { storyTopicsService } from '@/services/story-topics.service';
@@ -19,7 +17,7 @@ interface UpdateTopicFormProps {
 }
 
 export const UpdateTopicForm = ({ topic, opened, onClose }: UpdateTopicFormProps) => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const form = useForm<CreateTopicSchemaType>({
     validate: zodResolver(CreateTopicSchema),
@@ -34,7 +32,7 @@ export const UpdateTopicForm = ({ topic, opened, onClose }: UpdateTopicFormProps
       return await storyTopicsService().update(topic.id, values);
     },
     onSuccess: () => {
-      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ['story-topics'] });
       notifications.show({
         title: 'Topic updated',
         message: 'Topic updated successfully',
@@ -76,7 +74,7 @@ export const UpdateTopicForm = ({ topic, opened, onClose }: UpdateTopicFormProps
             {...form.getInputProps('description')}
           />
 
-          <Button type="submit" color="orange" loading={isPending} disabled={!form.isValid()}>
+          <Button type="submit" color="tertiary" loading={isPending} disabled={!form.isValid()}>
             Save Changes
           </Button>
         </Stack>

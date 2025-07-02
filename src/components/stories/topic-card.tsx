@@ -1,12 +1,10 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
 import { Box, Button, Card, Text, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { storyTopicsService } from '@/services/story-topics.service';
 import { StoryTopic } from '@/types/story/story-topic.interface';
@@ -15,13 +13,13 @@ import styles from './topic-card.module.css';
 import { UpdateTopicForm } from './update-topic-form';
 
 export const TopicCard = ({ topic }: { topic: StoryTopic }) => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const [opened, { open, close }] = useDisclosure(false);
 
   const { mutate: deleteTopic } = useMutation({
-    mutationFn: (id: number) => storyTopicsService().remove(id),
+    mutationFn: (id: number) => storyTopicsService().deleteTopic(id),
     onSuccess: () => {
-      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ['story-topics'] });
       notifications.show({
         title: 'Topic deleted',
         message: 'Topic has been deleted',

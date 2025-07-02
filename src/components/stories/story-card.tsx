@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { Anchor, Badge, Box, Card, Text, Title } from '@mantine/core';
 
+import { StoryStatus } from '@/enums';
 import { Story } from '@/types/story';
 
 import styles from './story-card.module.css';
@@ -11,6 +12,13 @@ interface StoryCardProps {
 }
 
 export function StoryCard({ story }: StoryCardProps) {
+  const badgeColor =
+    story.status === StoryStatus.FINISHED
+      ? 'primary'
+      : story.status === StoryStatus.IN_PROGRESS
+        ? 'tertiary'
+        : 'secondary';
+
   return (
     <Anchor component={Link} underline="never" href={`/stories/${story.id}`}>
       <Card shadow="sm" padding="lg" radius="md" withBorder h={280} className={styles.card}>
@@ -19,16 +27,7 @@ export function StoryCard({ story }: StoryCardProps) {
             <Title order={3} className={styles.title}>
               {story.title}
             </Title>
-            <Badge
-              variant="light"
-              color={
-                story.status === 'finished'
-                  ? 'green'
-                  : story.status === 'in-progress'
-                    ? 'blue'
-                    : 'yellow'
-              }
-            >
+            <Badge variant="light" color={badgeColor}>
               {story.status}
             </Badge>
           </Box>

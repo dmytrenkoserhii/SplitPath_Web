@@ -19,15 +19,12 @@ export const CreateStoryButton = ({ topic }: CreateStoryButtonProps) => {
 
   const { mutate: startStory, isPending } = useMutation({
     mutationFn: async () => {
-      console.log('🔥 MUTATION STARTED');
       const storyTitle = `${topic.name} Adventure`;
 
-      const storyResponse = await storiesService().create({
+      return await storiesService().create({
         title: storyTitle,
         topicId: topic.id,
       });
-      console.log(storyResponse);
-      return storyResponse;
     },
     onSuccess: (story) => {
       notifications.show({

@@ -1,15 +1,13 @@
 import { Box, Center, Text, Title } from '@mantine/core';
 
 import { ServerError } from '@/components/auth';
-import { StoriesPagination } from '@/components/stories';
 import { StoryCardsList } from '@/components/stories/story-cards-list';
+import { Pagination } from '@/components/ui';
+import { StoryStatus } from '@/enums';
 import { storiesService } from '@/services/stories.service';
+import { PageWithSearchParamsProps } from '@/types/story';
 
-interface ActiveStoriesPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export default async function ActiveStoriesPage({ searchParams }: ActiveStoriesPageProps) {
+export default async function StoriesPage({ searchParams }: PageWithSearchParamsProps) {
   try {
     const currentPage = Number(searchParams.page) || 1;
     const itemsPerPage = 9;
@@ -17,12 +15,27 @@ export default async function ActiveStoriesPage({ searchParams }: ActiveStoriesP
     const storiesData = await storiesService().findAllPaginated({
       page: currentPage,
       limit: itemsPerPage,
-      status: 'new',
+      status: StoryStatus.NEW,
     });
+
+    if (!storiesData.items.length) {
+      return (
+        <Box>
+          <Title c="tertiary" ta="center" mb="md">
+            Active Stories
+          </Title>
+          <Center py="xl">
+            <Text size="lg" c="dimmed">
+              No active stories found
+            </Text>
+          </Center>
+        </Box>
+      );
+    }
 
     return (
       <Box>
-        <Title c="orange" ta="center" mb="md">
+        <Title c="tertiary" ta="center" mb="md">
           Active Stories
         </Title>
 
@@ -36,23 +49,13 @@ export default async function ActiveStoriesPage({ searchParams }: ActiveStoriesP
           </Text>
         </Box>
 
-        {!storiesData.items.length ? (
-          <Center py="xl">
-            <Text size="lg" c="dimmed">
-              No active stories found
-            </Text>
-          </Center>
-        ) : (
-          <>
-            <StoryCardsList stories={storiesData.items} />
+        <StoryCardsList stories={storiesData.items} />
 
-            {storiesData.meta.totalPages > 1 && (
-              <StoriesPagination
-                currentPage={storiesData.meta.currentPage}
-                totalPages={storiesData.meta.totalPages}
-              />
-            )}
-          </>
+        {storiesData.meta.totalPages > 1 && (
+          <Pagination
+            currentPage={storiesData.meta.currentPage}
+            totalPages={storiesData.meta.totalPages}
+          />
         )}
       </Box>
     );

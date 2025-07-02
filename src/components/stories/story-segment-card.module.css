@@ -20,7 +20,7 @@
 
 .inactiveChoiceButton {
   opacity: 0.3;
-  background-color: #f8f9fa;
-  border-color: #dee2e6;
-  color: #6c757d;
+  background-color: var(--mantine-color-gray-0);
+  border-color: var(--mantine-color-gray-4);
+  color: var(--mantine-color-gray-6);
 }

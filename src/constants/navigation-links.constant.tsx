@@ -25,7 +25,7 @@ export const NAVIGATION_LINKS: NavigationLink[] = [
   },
   {
     label: 'Active',
-    href: '/stories/active',
+    href: '/stories',
     icon: <BookOpen />,
   },
 ];
