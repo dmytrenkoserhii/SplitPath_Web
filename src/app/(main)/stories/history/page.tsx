@@ -5,9 +5,14 @@ import { StoryCardsList } from '@/components/stories/story-cards-list';
 import { Pagination } from '@/components/ui';
 import { StoryStatus } from '@/enums';
 import { storiesService } from '@/services/stories.service';
-import { PageWithSearchParamsProps } from '@/types/story';
 
-export default async function HistoryPage({ searchParams }: PageWithSearchParamsProps) {
+type SearchParamsType = { [key: string]: string | string[] | undefined };
+
+interface HistoryPageProps {
+  searchParams: SearchParamsType;
+}
+
+export default async function HistoryPage({ searchParams }: HistoryPageProps) {
   try {
     const currentPage = Number(searchParams.page) || 1;
     const itemsPerPage = 9;

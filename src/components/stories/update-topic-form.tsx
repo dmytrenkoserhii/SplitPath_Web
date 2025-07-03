@@ -6,6 +6,7 @@ import { notifications } from '@mantine/notifications';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { ReactQueryTags } from '@/enums';
 import { CreateTopicSchema, CreateTopicSchemaType } from '@/schemas/stories';
 import { storyTopicsService } from '@/services/story-topics.service';
 import { StoryTopic } from '@/types/story/story-topic.interface';
@@ -32,7 +33,7 @@ export const UpdateTopicForm = ({ topic, opened, onClose }: UpdateTopicFormProps
       return await storyTopicsService().update(topic.id, values);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['story-topics'] });
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.STORY_TOPICS] });
       notifications.show({
         title: 'Topic updated',
         message: 'Topic updated successfully',

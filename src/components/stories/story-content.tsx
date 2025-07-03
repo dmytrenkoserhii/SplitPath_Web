@@ -7,7 +7,7 @@ import { notifications } from '@mantine/notifications';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { ServerError } from '@/components/auth';
+import { ReactQueryTags } from '@/enums';
 import { storiesService, storySegmentsService } from '@/services';
 
 import { StorySegmentCard } from './story-segment-card';
@@ -24,7 +24,7 @@ export function StoryContent({ storyId }: StoryContentProps) {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['story', storyId],
+    queryKey: [ReactQueryTags.STORY, storyId],
     queryFn: () => storiesService().findOneById(storyId),
   });
 
@@ -37,7 +37,7 @@ export function StoryContent({ storyId }: StoryContentProps) {
         color: 'green',
       });
 
-      queryClient.invalidateQueries({ queryKey: ['story', storyId] });
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.STORY, storyId] });
     },
     onError: (error: Error) => {
       notifications.show({
@@ -69,7 +69,7 @@ export function StoryContent({ storyId }: StoryContentProps) {
 
       const nextSegmentNumber = story.segments.length + 1;
 
-      queryClient.invalidateQueries({ queryKey: ['story', storyId] });
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.STORY, storyId] });
 
       setTimeout(() => {
         window.scrollTo({
@@ -113,7 +113,16 @@ export function StoryContent({ storyId }: StoryContentProps) {
   }
 
   if (error || !story) {
-    return <ServerError error={error || new Error('Story not found')} />;
+    return (
+      <Center>
+        <Stack align="center" gap="md">
+          <Title order={3} c="dimmed">
+            Story not available
+          </Title>
+          <Text c="dimmed">This story could not be loaded</Text>
+        </Stack>
+      </Center>
+    );
   }
 
   const isStoryComplete = story.segments.length >= story.numberOfSegments;

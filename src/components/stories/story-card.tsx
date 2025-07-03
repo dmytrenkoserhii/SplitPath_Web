@@ -12,12 +12,14 @@ interface StoryCardProps {
 }
 
 export function StoryCard({ story }: StoryCardProps) {
-  const badgeColor =
-    story.status === StoryStatus.FINISHED
-      ? 'primary'
-      : story.status === StoryStatus.IN_PROGRESS
-        ? 'tertiary'
-        : 'secondary';
+  let badgeColor = 'secondary';
+
+  if (story.status === StoryStatus.FINISHED) {
+    badgeColor = 'primary';
+  }
+  if (story.status === StoryStatus.IN_PROGRESS) {
+    badgeColor = 'tertiary';
+  }
 
   return (
     <Anchor component={Link} underline="never" href={`/stories/${story.id}`}>

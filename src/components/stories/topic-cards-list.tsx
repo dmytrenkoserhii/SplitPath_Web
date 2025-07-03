@@ -4,6 +4,7 @@ import { Loader, Stack, Text } from '@mantine/core';
 
 import { useQuery } from '@tanstack/react-query';
 
+import { ReactQueryTags } from '@/enums';
 import { storyTopicsService } from '@/services/story-topics.service';
 
 import { TopicCard } from './topic-card';
@@ -14,7 +15,7 @@ export const TopicCardsList = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['story-topics'],
+    queryKey: [ReactQueryTags.STORY_TOPICS],
     queryFn: () => storyTopicsService().findAll(),
   });
 

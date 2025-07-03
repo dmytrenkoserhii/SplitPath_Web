@@ -8,7 +8,7 @@ interface StoryTopicsApi {
   findAll: () => Promise<StoryTopic[]>;
   create: (data: CreateTopicSchemaType) => Promise<StoryTopic>;
   update: (id: number, data: CreateTopicSchemaType) => Promise<StoryTopic>;
-  deleteTopic: (id: number) => Promise<XiorResponse<StoryTopic>>;
+  delete: (id: number) => Promise<XiorResponse<StoryTopic>>;
 }
 
 export const storyTopicsService = (): StoryTopicsApi => {
@@ -16,7 +16,7 @@ export const storyTopicsService = (): StoryTopicsApi => {
     findAll,
     create,
     update,
-    deleteTopic,
+    delete: deleteTopic,
   };
 };
 

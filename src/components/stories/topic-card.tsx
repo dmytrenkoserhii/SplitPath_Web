@@ -6,6 +6,7 @@ import { notifications } from '@mantine/notifications';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { ReactQueryTags } from '@/enums';
 import { storyTopicsService } from '@/services/story-topics.service';
 import { StoryTopic } from '@/types/story/story-topic.interface';
 
@@ -17,9 +18,9 @@ export const TopicCard = ({ topic }: { topic: StoryTopic }) => {
   const [opened, { open, close }] = useDisclosure(false);
 
   const { mutate: deleteTopic } = useMutation({
-    mutationFn: (id: number) => storyTopicsService().deleteTopic(id),
+    mutationFn: (id: number) => storyTopicsService().delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['story-topics'] });
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.STORY_TOPICS] });
       notifications.show({
         title: 'Topic deleted',
         message: 'Topic has been deleted',

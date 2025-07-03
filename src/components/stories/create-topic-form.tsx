@@ -7,6 +7,7 @@ import { notifications } from '@mantine/notifications';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { ReactQueryTags } from '@/enums';
 import { CreateTopicSchema, CreateTopicSchemaType } from '@/schemas/stories';
 import { storyTopicsService } from '@/services/story-topics.service';
 
@@ -27,7 +28,7 @@ export const CreateTopicForm = () => {
       return await storyTopicsService().create(values);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['story-topics'] });
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.STORY_TOPICS] });
       notifications.show({
         title: 'Topic created',
         message: 'Topic created successfully',

@@ -4,7 +4,6 @@ import { Button, Card, Group, SimpleGrid, Stack, Text, Title } from '@mantine/co
 
 import { StorySegment } from '@/types/story';
 
-import { ChoiceButton } from './choise-button';
 import styles from './story-segment-card.module.css';
 
 interface StorySegmentCardProps {
@@ -64,16 +63,20 @@ export function StorySegmentCard({
           <SimpleGrid cols={2} spacing="sm">
             {segment.choices.map((choice, index) => {
               const isSelected = choice === segment.selectedChoice;
+              const isDisabled = !shouldShowActiveChoices || isGenerating;
 
               return (
-                <ChoiceButton
+                <Button
                   key={index}
-                  choice={choice}
-                  isSelected={isSelected}
-                  shouldShowActiveChoices={shouldShowActiveChoices}
-                  isGenerating={isGenerating}
-                  onChoiceSelect={onChoiceSelect}
-                />
+                  variant={isSelected ? 'filled' : 'outline'}
+                  color={isSelected ? 'green' : shouldShowActiveChoices ? 'tertiary' : 'gray'}
+                  size="sm"
+                  onClick={() => (shouldShowActiveChoices ? onChoiceSelect(choice) : undefined)}
+                  disabled={isDisabled}
+                  className={`${styles.choiceButton} ${!shouldShowActiveChoices && !isSelected ? styles.inactiveChoiceButton : ''}`}
+                >
+                  {choice}
+                </Button>
               );
             })}
           </SimpleGrid>

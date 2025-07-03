@@ -9,4 +9,7 @@ export enum ReactQueryTags {
 
   PRIVATE_CHAT_MESSAGES = 'privateChatMessages',
   CHAT_PREVIEWS = 'chatPreviews',
+
+  STORY_TOPICS = 'storyTopics',
+  STORY = 'story',
 }
