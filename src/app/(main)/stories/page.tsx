@@ -6,7 +6,7 @@ import { Pagination } from '@/components/ui';
 import { StoryStatus } from '@/enums';
 import { storiesService } from '@/services/stories.service';
 
-type SearchParamsType = { [key: string]: string | string[] | undefined };
+type SearchParamsType = { page: string };
 
 interface StoriesPageProps {
   searchParams: SearchParamsType;
