@@ -7,10 +7,17 @@
   "tabWidth": 2,
   "trailingComma": "all",
   "arrowParens": "always",
-  "importOrder": ["^[^@/./src]", "^@nestjs/(.*)$", "^@/", "^[./]", "^src/"],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
-  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
+  "endOfLine": "auto",
   "plugins": ["@trivago/prettier-plugin-sort-imports"],
-  "endOfLine": "auto"
+  "importOrder": [
+    "^react",
+    "^next",
+    "^@mantine/(.*)$",
+    "^@tanstack/(.*)$",
+    "^[a-z]",
+    "^@/",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }
