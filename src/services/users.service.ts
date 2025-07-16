@@ -1,4 +1,5 @@
 import { XiorResponse } from 'xior';
+
 import { xiorClient } from '@/lib';
 import { User } from '@/types/user';
 

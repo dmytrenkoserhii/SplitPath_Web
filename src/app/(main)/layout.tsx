@@ -20,8 +20,8 @@ export default async function MainLayout({ children }: { children: React.ReactNo
         <GlobalChatSocketManager />
 
         <AppShell header={{ height: 60 }} footer={{ height: 60 }} padding="md">
-          {user && <Header user={user} />}
-          {user && <Navbar user={user} />}
+          <Header user={user} />
+          <Navbar user={user} />
           <AppShellMain>{children}</AppShellMain>
           <Footer />
         </AppShell>

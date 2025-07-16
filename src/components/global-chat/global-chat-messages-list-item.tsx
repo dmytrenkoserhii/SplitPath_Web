@@ -1,11 +1,11 @@
-'use client';
-
 import { Group, Paper, Stack, Text } from '@mantine/core';
 
-import { PublicMessage } from '@/types/global-chat';
+import dayjs from 'dayjs';
+
+import { GlobalMessage } from '@/types/global-chat';
 
 interface GlobalChatMessagesListItemProps {
-  message: PublicMessage;
+  message: GlobalMessage;
   currentUserId: number;
 }
 
@@ -22,10 +22,7 @@ export const GlobalChatMessagesListItem = ({
   const borderTopRightRadius = isCurrentUser ? 4 : 16;
   const borderTopLeftRadius = isCurrentUser ? 16 : 4;
 
-  const messageTime = new Date(message.createdAt).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const messageTime = dayjs(message.createdAt).format('HH:mm');
 
   return (
     <Stack align={messagePosition} gap="xs">

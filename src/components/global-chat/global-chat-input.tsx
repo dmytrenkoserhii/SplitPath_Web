@@ -3,27 +3,38 @@
 import React from 'react';
 
 import { ActionIcon, Group, Paper, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
 
 import { useMutation } from '@tanstack/react-query';
 
 import { Send } from 'lucide-react';
 
 import { globalChatService } from '@/services';
-import { CreatePublicMessagePayload } from '@/types/global-chat';
+import { CreateGlobalMessagePayload } from '@/types/global-chat';
 
 interface GlobalChatInputProps {
   onMessageSent?: () => void;
 }
 
+interface MessageForm {
+  content: string;
+}
+
 export const GlobalChatInput = ({ onMessageSent }: GlobalChatInputProps) => {
-  const [message, setMessage] = React.useState('');
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const form = useForm<MessageForm>({
+    initialValues: {
+      content: '',
+    },
+    validate: {
+      content: (value) => (value.trim().length === 0 ? 'Message cannot be empty' : null),
+    },
+  });
 
   const sendMessageMutation = useMutation({
-    mutationFn: (newMessage: CreatePublicMessagePayload) =>
+    mutationFn: (newMessage: CreateGlobalMessagePayload) =>
       globalChatService().sendMessage(newMessage),
     onSuccess: () => {
-      setMessage('');
+      form.reset();
 
       if (onMessageSent) {
         onMessageSent();
@@ -34,9 +45,8 @@ export const GlobalChatInput = ({ onMessageSent }: GlobalChatInputProps) => {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmedMessage = message.trim();
+  const handleSubmit = (values: MessageForm) => {
+    const trimmedMessage = values.content.trim();
 
     if (!trimmedMessage || sendMessageMutation.isPending) return;
 
@@ -47,16 +57,14 @@ export const GlobalChatInput = ({ onMessageSent }: GlobalChatInputProps) => {
 
   return (
     <Paper p="xs" withBorder>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
         <Group gap="xs">
           <TextInput
             placeholder="Type a message..."
-            value={message}
-            onChange={(e) => setMessage(e.currentTarget.value)}
             style={{ flex: 1 }}
             disabled={sendMessageMutation.isPending}
             autoComplete="off"
-            ref={inputRef}
+            {...form.getInputProps('content')}
           />
           <ActionIcon
             type="submit"
@@ -64,7 +72,7 @@ export const GlobalChatInput = ({ onMessageSent }: GlobalChatInputProps) => {
             variant="filled"
             color="secondary"
             size="lg"
-            disabled={!message.trim()}
+            disabled={!form.values.content.trim() || sendMessageMutation.isPending}
             loading={sendMessageMutation.isPending}
           >
             <Send size={18} />

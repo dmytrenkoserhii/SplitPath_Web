@@ -16,12 +16,12 @@ import {
 
 import { ChevronDown } from 'lucide-react';
 
-import { PublicMessage } from '@/types/global-chat';
+import { GlobalMessage } from '@/types/global-chat';
 
 import { GlobalChatMessagesListItem } from './global-chat-messages-list-item';
 
 interface GlobalChatMessagesListProps {
-  messages: PublicMessage[];
+  messages: GlobalMessage[];
   currentUserId: number;
   onScrollToTop: () => void;
   isFetchingNextPage: boolean;
@@ -48,31 +48,53 @@ export const GlobalChatMessagesList = ({
   };
 
   React.useEffect(() => {
-    if (scrollAreaRef.current && messages.length > 0) {
-      if (!initialScrollDone.current) {
+    if (!scrollAreaRef.current || messages.length === 0) return;
+
+    const handleInitialScroll = () => {
+      scrollToBottom();
+      initialScrollDone.current = true;
+    };
+
+    const handlePaginationScrollPreservation = () => {
+      prevScrollHeightRef.current = scrollAreaRef.current!.scrollHeight;
+      prevScrollTopRef.current = scrollAreaRef.current!.scrollTop;
+    };
+
+    const handlePostPaginationScrollAdjustment = () => {
+      const newScrollHeight = scrollAreaRef.current!.scrollHeight;
+      const heightIncreasedBy = newScrollHeight - prevScrollHeightRef.current;
+
+      scrollAreaRef.current!.scrollTop = prevScrollTopRef.current + heightIncreasedBy;
+
+      prevScrollHeightRef.current = 0;
+      prevScrollTopRef.current = 0;
+    };
+
+    const handleAutoScrollForNewMessages = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current!;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
+
+      if (isNearBottom) {
         scrollToBottom();
-        initialScrollDone.current = true;
-      } else {
-        if (isFetchingNextPage) {
-          prevScrollHeightRef.current = scrollAreaRef.current.scrollHeight;
-          prevScrollTopRef.current = scrollAreaRef.current.scrollTop;
-        } else if (prevScrollHeightRef.current > 0 && messages.length > 0) {
-          const newScrollHeight = scrollAreaRef.current.scrollHeight;
-          const heightIncreasedBy = newScrollHeight - prevScrollHeightRef.current;
-
-          scrollAreaRef.current.scrollTop = prevScrollTopRef.current + heightIncreasedBy;
-
-          prevScrollHeightRef.current = 0;
-          prevScrollTopRef.current = 0;
-        } else {
-          const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
-          const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
-          if (isNearBottom) {
-            scrollToBottom();
-          }
-        }
       }
+    };
+
+    if (!initialScrollDone.current) {
+      handleInitialScroll();
+      return;
     }
+
+    if (isFetchingNextPage) {
+      handlePaginationScrollPreservation();
+      return;
+    }
+
+    if (prevScrollHeightRef.current > 0) {
+      handlePostPaginationScrollAdjustment();
+      return;
+    }
+
+    handleAutoScrollForNewMessages();
   }, [messages, isFetchingNextPage]);
 
   const handleScroll = () => {
@@ -91,6 +113,7 @@ export const GlobalChatMessagesList = ({
       }
     }
   };
+
   return (
     <Paper w="100%" h={rem(600)} withBorder style={{ position: 'relative' }}>
       <LoadingOverlay

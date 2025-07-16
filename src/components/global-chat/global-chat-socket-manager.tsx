@@ -7,7 +7,7 @@ import { InfiniteData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ReactQueryTags } from '@/enums';
 import { getGlobalChatSocket } from '@/lib';
 import { usersService } from '@/services';
-import { PublicMessage } from '@/types/global-chat/public-message.interface';
+import { GlobalMessage } from '@/types/global-chat/global-message.interface';
 import { PaginatedResponse } from '@/types/shared';
 import { User } from '@/types/user';
 
@@ -24,12 +24,12 @@ export const GlobalChatSocketManager = () => {
   });
 
   React.useEffect(() => {
-    const onNewGlobalMessage = (message: PublicMessage) => {
+    const onNewGlobalMessage = (message: GlobalMessage) => {
       if (!userData) {
         return;
       }
 
-      queryClient.setQueryData<InfiniteData<PaginatedResponse<PublicMessage>>>(
+      queryClient.setQueryData<InfiniteData<PaginatedResponse<GlobalMessage>>>(
         [ReactQueryTags.GLOBAL_CHAT_MESSAGES],
         (oldData) => {
           if (!oldData) {

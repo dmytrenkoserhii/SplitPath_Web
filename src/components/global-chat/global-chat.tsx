@@ -10,7 +10,7 @@ import { MessageCircle } from 'lucide-react';
 
 import { ReactQueryTags } from '@/enums';
 import { globalChatService, usersService } from '@/services';
-import { PublicMessage } from '@/types/global-chat';
+import { GlobalMessage } from '@/types/global-chat';
 import { PaginatedResponse } from '@/types/shared';
 import { User } from '@/types/user';
 
@@ -29,9 +29,9 @@ export const GlobalChat = () => {
   });
 
   const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery<
-    PaginatedResponse<PublicMessage>,
+    PaginatedResponse<GlobalMessage>,
     Error,
-    InfiniteData<PaginatedResponse<PublicMessage>, number>,
+    InfiniteData<PaginatedResponse<GlobalMessage>, number>,
     [ReactQueryTags.GLOBAL_CHAT_MESSAGES],
     number
   >({
@@ -56,7 +56,7 @@ export const GlobalChat = () => {
     console.error('Error fetching chat messages:', error.message);
   }
 
-  const allMessages: PublicMessage[] = data
+  const allMessages: GlobalMessage[] = data
     ? data.pages
         .map((page) => page.items)
         .flat()

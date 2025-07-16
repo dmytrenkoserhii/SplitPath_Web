@@ -1,2 +1,2 @@
-export type { CreatePublicMessagePayload } from './create-public-message-payload.interface';
-export type { PublicMessage } from './public-message.interface';
+export type { CreateGlobalMessagePayload } from './create-global-message-payload.interface';
+export type { GlobalMessage } from './global-message.interface';
