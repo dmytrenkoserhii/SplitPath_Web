@@ -2,6 +2,7 @@ import { Socket, io } from 'socket.io-client';
 
 let friendsSocket: Socket;
 let privateChatsSocket: Socket;
+let globalChatSocket: Socket;
 
 export const getFriendsSocket = (): Socket => {
   if (!friendsSocket) {
@@ -18,16 +19,26 @@ export const getFriendsSocket = (): Socket => {
 
 export const getPrivateChatsSocket = (): Socket => {
   if (!privateChatsSocket) {
-    privateChatsSocket = io(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/private-chats`,
-      {
-        withCredentials: true,
-        transports: ['websocket', 'polling'],
-        extraHeaders: {
-          'Access-Control-Allow-Origin': 'http://localhost:3000',
-        },
-      }
-    );
+    privateChatsSocket = io(`${process.env.NEXT_PUBLIC_BACKEND_URL}/private-chats`, {
+      withCredentials: true,
+      transports: ['websocket', 'polling'],
+      extraHeaders: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
+      },
+    });
   }
   return privateChatsSocket;
+};
+
+export const getGlobalChatSocket = (): Socket => {
+  if (!globalChatSocket) {
+    globalChatSocket = io(`${process.env.NEXT_PUBLIC_BACKEND_URL}/global-chat`, {
+      withCredentials: true,
+      transports: ['websocket', 'polling'],
+      extraHeaders: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
+      },
+    });
+  }
+  return globalChatSocket;
 };
