@@ -3,12 +3,13 @@
 import React from 'react';
 
 import { ActionIcon, Group, Paper, TextInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { useForm, zodResolver } from '@mantine/form';
 
 import { useMutation } from '@tanstack/react-query';
 
 import { Send } from 'lucide-react';
 
+import { CreateGlobalMessageSchema } from '@/schemas/global-chat';
 import { globalChatService } from '@/services';
 import { CreateGlobalMessagePayload } from '@/types/global-chat';
 
@@ -16,18 +17,12 @@ interface GlobalChatInputProps {
   onMessageSent?: () => void;
 }
 
-interface MessageForm {
-  content: string;
-}
-
 export const GlobalChatInput = ({ onMessageSent }: GlobalChatInputProps) => {
-  const form = useForm<MessageForm>({
+  const form = useForm({
     initialValues: {
       content: '',
     },
-    validate: {
-      content: (value) => (value.trim().length === 0 ? 'Message cannot be empty' : null),
-    },
+    validate: zodResolver(CreateGlobalMessageSchema),
   });
 
   const sendMessageMutation = useMutation({
@@ -35,23 +30,18 @@ export const GlobalChatInput = ({ onMessageSent }: GlobalChatInputProps) => {
       globalChatService().sendMessage(newMessage),
     onSuccess: () => {
       form.reset();
-
-      if (onMessageSent) {
-        onMessageSent();
-      }
+      onMessageSent?.();
     },
     onError: (error) => {
       console.error('Failed to send message:', error);
     },
   });
 
-  const handleSubmit = (values: MessageForm) => {
-    const trimmedMessage = values.content.trim();
-
-    if (!trimmedMessage || sendMessageMutation.isPending) return;
+  const handleSubmit = (values: typeof form.values) => {
+    if (sendMessageMutation.isPending) return;
 
     sendMessageMutation.mutate({
-      content: trimmedMessage,
+      content: values.content,
     });
   };
 
@@ -72,7 +62,7 @@ export const GlobalChatInput = ({ onMessageSent }: GlobalChatInputProps) => {
             variant="filled"
             color="secondary"
             size="lg"
-            disabled={!form.values.content.trim() || sendMessageMutation.isPending}
+            disabled={sendMessageMutation.isPending}
             loading={sendMessageMutation.isPending}
           >
             <Send size={18} />
