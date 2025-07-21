@@ -1,41 +1,46 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useEffect } from 'react';
 
-import { Button, Card, Group, Stack, Text, TextInput, Textarea } from '@mantine/core';
+import { useRouter } from 'next/navigation';
+
+import { Button, Card, Group, Loader, Stack, Text, TextInput, Textarea } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
+import { useMutation, useQuery } from '@tanstack/react-query';
+
+import { ReactQueryTags } from '@/enums';
 import { UpdateAccountFormSchema, UpdateAccountFormSchemaType } from '@/schemas/accounts';
-import { Account } from '@/types/user';
 
-interface SettingsFormProps {
-  account: Account | null;
-  error: string | null;
-}
-
-export const SettingsForm = ({ account, error }: SettingsFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+export const SettingsForm = () => {
+  const router = useRouter();
+  const {
+    data: account,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: [ReactQueryTags.ACCOUNT],
+    queryFn: async () => {
+      const res = await fetch('/api/account');
+      if (!res.ok) throw new Error('Failed to fetch account');
+      return res.json();
+    },
+  });
 
   const form = useForm<UpdateAccountFormSchemaType>({
     validate: zodResolver(UpdateAccountFormSchema),
     initialValues: {
-      username: account?.username || '',
-      firstName: account?.firstName || '',
-      lastName: account?.lastName || '',
-      birthDate: account?.birthDate ? new Date(account.birthDate) : null,
-      bio: account?.bio || '',
+      username: '',
+      firstName: '',
+      lastName: '',
+      birthDate: null,
+      bio: '',
     },
   });
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
+  useEffect(() => {
     if (account) {
       form.setValues({
         username: account.username || '',
@@ -45,68 +50,59 @@ export const SettingsForm = ({ account, error }: SettingsFormProps) => {
         bio: account.bio || '',
       });
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account]);
 
-  const handleSubmit = form.onSubmit(async (values) => {
-    setIsLoading(true);
-
-    try {
+  const { mutate: updateAccount, isPending: isLoadingMutation } = useMutation({
+    mutationFn: async (values: UpdateAccountFormSchemaType) => {
       const payload = {
         ...values,
-        birthDate: values.birthDate ? values.birthDate.toISOString().split('T')[0] : null,
+        birthDate: values.birthDate ? values.birthDate.toISOString().split('T')[0] : undefined,
       };
 
       const response = await fetch('/api/account', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
-
-      if (response.ok) {
-        notifications.show({
-          title: 'Profile updated',
-          message: 'Your profile has been updated successfully',
-          color: 'green',
-        });
-        setIsEditing(false);
-      } else {
-        notifications.show({
-          title: 'Error',
-          message: result.error || 'Failed to update profile',
-          color: 'red',
-        });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update profile');
       }
-    } catch (error) {
-      console.error('Update error:', error);
+
+      return response.json();
+    },
+    onSuccess: () => {
+      notifications.show({
+        title: 'Profile updated',
+        message: 'Your profile has been updated successfully',
+        color: 'green',
+      });
+      router.push('/profile');
+    },
+    onError: (error: unknown) => {
       notifications.show({
         title: 'Error',
-        message: 'Failed to update profile',
+        message: error instanceof Error ? error.message : 'Failed to update profile',
         color: 'red',
       });
-    } finally {
-      setIsLoading(false);
-    }
+    },
   });
+
+  const handleSubmit = form.onSubmit((values) => {
+    updateAccount(values);
+  });
+
+  if (isLoading) {
+    return <Loader mx="auto" />;
+  }
 
   if (error) {
     return (
-      <Card shadow="sm" padding="xl" radius="md" withBorder>
-        <Text c="red" ta="center">
-          {error}
-        </Text>
-      </Card>
-    );
-  }
-
-  if (!account) {
-    return (
-      <Card shadow="sm" padding="xl" radius="md" withBorder>
-        <Text ta="center">No account data found.</Text>
-      </Card>
+      <Text ta="center" c="red">
+        Failed to load account data.
+      </Text>
     );
   }
 
@@ -114,94 +110,43 @@ export const SettingsForm = ({ account, error }: SettingsFormProps) => {
     <Card shadow="sm" padding="xl" radius="md" withBorder>
       <form onSubmit={handleSubmit}>
         <Stack gap="lg">
-          <div>
-            <Text fw={500} mb="xs">
-              Username
-            </Text>
-            {isEditing ? (
-              <TextInput placeholder="Enter username" {...form.getInputProps('username')} />
-            ) : (
-              <Text c="dimmed">{account.username}</Text>
-            )}
-          </div>
-
-          <div>
-            <Text fw={500} mb="xs">
-              First Name
-            </Text>
-            {isEditing ? (
-              <TextInput placeholder="Enter first name" {...form.getInputProps('firstName')} />
-            ) : (
-              <Text c="dimmed">{account.firstName || 'Not set'}</Text>
-            )}
-          </div>
-
-          <div>
-            <Text fw={500} mb="xs">
-              Last Name
-            </Text>
-            {isEditing ? (
-              <TextInput placeholder="Enter last name" {...form.getInputProps('lastName')} />
-            ) : (
-              <Text c="dimmed">{account.lastName || 'Not set'}</Text>
-            )}
-          </div>
-
-          <div>
-            <Text fw={500} mb="xs">
-              Birth Date
-            </Text>
-            {isEditing ? (
-              <DateInput
-                placeholder="Select birth date"
-                valueFormat="YYYY-MM-DD"
-                {...form.getInputProps('birthDate')}
-              />
-            ) : (
-              <Text c="dimmed">
-                {account.birthDate ? new Date(account.birthDate).toLocaleDateString() : 'Not set'}
-              </Text>
-            )}
-          </div>
-
-          <div>
-            <Text fw={500} mb="xs">
-              Bio
-            </Text>
-            {isEditing ? (
-              <Textarea
-                placeholder="Tell us about yourself..."
-                minRows={3}
-                maxRows={6}
-                {...form.getInputProps('bio')}
-              />
-            ) : (
-              <Text c="dimmed" style={{ whiteSpace: 'pre-wrap' }}>
-                {account.bio || 'No bio set'}
-              </Text>
-            )}
-          </div>
-
+          <TextInput
+            label="Username"
+            placeholder="Enter username"
+            {...form.getInputProps('username')}
+          />
+          <TextInput
+            label="First Name"
+            placeholder="Enter first name"
+            {...form.getInputProps('firstName')}
+          />
+          <TextInput
+            label="Last Name"
+            placeholder="Enter last name"
+            {...form.getInputProps('lastName')}
+          />
+          <DateInput
+            label="Birth Date"
+            placeholder="Select birth date"
+            valueFormat="YYYY-MM-DD"
+            {...form.getInputProps('birthDate')}
+          />
+          <Textarea
+            label="Bio"
+            placeholder="Tell us about yourself..."
+            minRows={3}
+            maxRows={6}
+            {...form.getInputProps('bio')}
+          />
           <Group justify="flex-end" mt="md">
-            {isEditing ? (
-              <>
-                <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  color="tertiary"
-                  loading={isLoading}
-                  disabled={!form.isValid()}
-                >
-                  Save Changes
-                </Button>
-              </>
-            ) : (
-              <Button onClick={handleEdit} color="tertiary">
-                Edit Profile
-              </Button>
-            )}
+            <Button
+              type="submit"
+              color="tertiary"
+              loading={isLoadingMutation}
+              disabled={!form.isValid()}
+            >
+              Save Changes
+            </Button>
           </Group>
         </Stack>
       </form>

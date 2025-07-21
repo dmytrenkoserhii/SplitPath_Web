@@ -11,19 +11,17 @@ export const UpdateAccountFormSchema = z.object({
     .string()
     .min(1, 'First name must be at least 1 character')
     .max(50, 'First name must not exceed 50 characters')
-    .optional()
-    .or(z.literal('')),
+    .optional(),
 
   lastName: z
     .string()
     .min(1, 'Last name must be at least 1 character')
     .max(50, 'Last name must not exceed 50 characters')
-    .optional()
-    .or(z.literal('')),
+    .optional(),
 
   birthDate: z.date().optional().or(z.literal(null)),
 
-  bio: z.string().max(500, 'Bio must not exceed 500 characters').optional().or(z.literal('')),
+  bio: z.string().max(500, 'Bio must not exceed 500 characters').optional(),
 });
 
 export type UpdateAccountFormSchemaType = z.infer<typeof UpdateAccountFormSchema>;

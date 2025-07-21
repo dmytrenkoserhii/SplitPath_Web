@@ -1,43 +1,67 @@
 import { cookies } from 'next/headers';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import { Stack, Title } from '@mantine/core';
+import { Button, Card, Group, Stack, Text, Title } from '@mantine/core';
 
 import { ServerError } from '@/components/auth';
-import { SettingsForm } from '@/components/profile';
 import { Account } from '@/types/user';
 
 export default async function ProfilePage() {
   try {
-    let account: Account | null = null;
-    let error: string | null = null;
+    const cookieStore = cookies();
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account`, {
+      headers: {
+        Cookie: cookieStore.toString(),
+        'Content-Type': 'application/json',
+      },
+    });
 
-    try {
-      const cookieStore = cookies();
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account`, {
-        headers: {
-          Cookie: cookieStore.toString(),
-          'Content-Type': 'application/json',
-        },
-        next: { tags: ['account'] },
-      });
-
-      if (response.ok) {
-        account = await response.json();
-      } else {
-        error = 'Failed to load account data';
-      }
-    } catch (err) {
-      console.error('Server-side account fetch error:', err);
-      error = 'Failed to load account data';
+    if (response.status === 404) {
+      notFound();
     }
+
+    if (!response.ok) {
+      throw new Error('Failed to load account data');
+    }
+
+    const account: Account = await response.json();
 
     return (
       <Stack gap="xl">
         <Title order={1} ta="center">
-          Profile Settings
+          Profile
         </Title>
+        <Card shadow="sm" padding="xl" radius="md" withBorder>
+          <Stack gap="md">
+            <Text>
+              <b>Username:</b> {account.username}
+            </Text>
 
-        <SettingsForm account={account} error={error} />
+            <Text>
+              <b>First Name:</b> {account.firstName || 'Not set'}
+            </Text>
+
+            <Text>
+              <b>Last Name:</b> {account.lastName || 'Not set'}
+            </Text>
+
+            <Text>
+              <b>Birth Date:</b>{' '}
+              {account.birthDate ? new Date(account.birthDate).toLocaleDateString() : 'Not set'}
+            </Text>
+
+            <Text>
+              <b>Bio:</b> {account.bio || 'No bio set'}
+            </Text>
+
+            <Group justify="flex-end">
+              <Button component={Link} href="/profile/edit" color="tertiary">
+                Edit Profile
+              </Button>
+            </Group>
+          </Stack>
+        </Card>
       </Stack>
     );
   } catch (error) {
