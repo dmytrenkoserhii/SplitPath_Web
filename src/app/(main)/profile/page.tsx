@@ -4,12 +4,14 @@ import { notFound } from 'next/navigation';
 
 import { Button, Card, Group, Stack, Text, Title } from '@mantine/core';
 
+import dayjs from 'dayjs';
+
 import { ServerError } from '@/components/auth';
 import { Account } from '@/types/user';
 
 export default async function ProfilePage() {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/account`, {
       headers: {
         Cookie: cookieStore.toString(),
@@ -48,7 +50,7 @@ export default async function ProfilePage() {
 
             <Text>
               <b>Birth Date:</b>{' '}
-              {account.birthDate ? new Date(account.birthDate).toLocaleDateString() : 'Not set'}
+              {account.birthDate ? dayjs(account.birthDate).format('YYYY-MM-DD') : 'Not set'}
             </Text>
 
             <Text>

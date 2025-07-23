@@ -9,24 +9,24 @@ import { DateInput } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import dayjs from 'dayjs';
 
 import { ReactQueryTags } from '@/enums';
 import { UpdateAccountFormSchema, UpdateAccountFormSchemaType } from '@/schemas/accounts';
+import { accountsService } from '@/services/account.service';
 
 export const SettingsForm = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const {
     data: account,
     isLoading,
     error,
   } = useQuery({
     queryKey: [ReactQueryTags.ACCOUNT],
-    queryFn: async () => {
-      const res = await fetch('/api/account');
-      if (!res.ok) throw new Error('Failed to fetch account');
-      return res.json();
-    },
+    queryFn: () => accountsService().getCurrent(),
   });
 
   const form = useForm<UpdateAccountFormSchemaType>({
@@ -50,28 +50,16 @@ export const SettingsForm = () => {
         bio: account.bio || '',
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
 
   const { mutate: updateAccount, isPending: isLoadingMutation } = useMutation({
     mutationFn: async (values: UpdateAccountFormSchemaType) => {
       const payload = {
         ...values,
-        birthDate: values.birthDate ? values.birthDate.toISOString().split('T')[0] : undefined,
+        birthDate: values.birthDate ? dayjs(values.birthDate).format('YYYY-MM-DD') : undefined,
       };
 
-      const response = await fetch('/api/account', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update profile');
-      }
-
-      return response.json();
+      return accountsService().updateViaApiRoute(payload);
     },
     onSuccess: () => {
       notifications.show({
@@ -79,6 +67,8 @@ export const SettingsForm = () => {
         message: 'Your profile has been updated successfully',
         color: 'green',
       });
+
+      queryClient.invalidateQueries({ queryKey: [ReactQueryTags.ACCOUNT] });
       router.push('/profile');
     },
     onError: (error: unknown) => {

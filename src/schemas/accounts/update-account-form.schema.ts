@@ -19,7 +19,7 @@ export const UpdateAccountFormSchema = z.object({
     .max(50, 'Last name must not exceed 50 characters')
     .optional(),
 
-  birthDate: z.date().optional().or(z.literal(null)),
+  birthDate: z.date().optional().nullable(),
 
   bio: z.string().max(500, 'Bio must not exceed 500 characters').optional(),
 });
