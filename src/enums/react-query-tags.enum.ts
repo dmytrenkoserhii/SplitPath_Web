@@ -13,4 +13,6 @@ export enum ReactQueryTags {
 
   STORY_TOPICS = 'storyTopics',
   STORY = 'story',
+
+  ACCOUNT = 'account',
 }
