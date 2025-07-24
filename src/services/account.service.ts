@@ -11,15 +11,15 @@ interface UpdateAccountData {
 
 interface AccountsApi {
   getCurrent: () => Promise<Account>;
-  updateViaApiRoute: (data: UpdateAccountData) => Promise<Account>;
-  updateViaBackend: (data: UpdateAccountData, headers: Record<string, string>) => Promise<Account>;
+  apiRouteUpdate: (data: UpdateAccountData) => Promise<Account>;
+  update: (data: UpdateAccountData, headers: Record<string, string>) => Promise<Account>;
 }
 
 export const accountsService = (): AccountsApi => {
   return {
     getCurrent,
-    updateViaApiRoute,
-    updateViaBackend,
+    apiRouteUpdate,
+    update,
   };
 };
 
@@ -28,12 +28,12 @@ const getCurrent = async () => {
   return response.data;
 };
 
-const updateViaApiRoute = async (data: UpdateAccountData) => {
+const apiRouteUpdate = async (data: UpdateAccountData) => {
   const response = await xiorClientApi.patch<Account>('/api/account', data);
   return response.data;
 };
 
-const updateViaBackend = async (data: UpdateAccountData, headers: Record<string, string>) => {
+const update = async (data: UpdateAccountData, headers: Record<string, string>) => {
   const response = await xiorClient.patch<Account>('account', data, { headers });
   return response.data;
 };

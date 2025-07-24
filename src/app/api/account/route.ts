@@ -10,7 +10,7 @@ export async function PATCH(request: NextRequest) {
     const authCookies = cookieStore.toString();
     const body = await request.json();
 
-    const account = await accountsService().updateViaBackend(body, {
+    const account = await accountsService().update(body, {
       Cookie: authCookies,
       'Content-Type': 'application/json',
     });

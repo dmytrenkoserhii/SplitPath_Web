@@ -59,7 +59,7 @@ export const SettingsForm = () => {
         birthDate: values.birthDate ? dayjs(values.birthDate).format('YYYY-MM-DD') : undefined,
       };
 
-      return accountsService().updateViaApiRoute(payload);
+      return accountsService().apiRouteUpdate(payload);
     },
     onSuccess: () => {
       notifications.show({

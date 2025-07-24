@@ -46,7 +46,7 @@ const processQueue = (error: XiorError | null) => {
 
 // Request interceptor
 async function requestInterceptor(config: XiorInterceptorRequestConfig) {
-  if (!isClientSide() && typeof window === 'undefined') {
+  if (!isClientSide()) {
     const { cookies } = await import('next/headers');
     const cookiesString = (await cookies())
       .getAll()
