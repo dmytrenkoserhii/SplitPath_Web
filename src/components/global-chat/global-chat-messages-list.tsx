@@ -43,15 +43,15 @@ export const GlobalChatMessagesList = ({
   const prevScrollHeightRef = React.useRef(0);
   const prevScrollTopRef = React.useRef(0);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = (behavior: 'smooth' | 'instant' = 'smooth') => {
+    messagesEndRef.current?.scrollIntoView({ behavior });
   };
 
   React.useEffect(() => {
     if (!scrollAreaRef.current || messages.length === 0) return;
 
     const handleInitialScroll = () => {
-      scrollToBottom();
+      scrollToBottom('instant');
       initialScrollDone.current = true;
     };
 
@@ -106,7 +106,9 @@ export const GlobalChatMessagesList = ({
       }
 
       const isAtBottom = scrollHeight - scrollTop - clientHeight < 200;
-      setShowScrollToBottomButton(!isAtBottom && scrollHeight > clientHeight);
+      setShowScrollToBottomButton(
+        !isAtBottom && scrollHeight > clientHeight && hasUserScrolled.current,
+      );
 
       if (isAtBottom && !hasUserScrolled.current) {
         hasUserScrolled.current = true;
@@ -154,11 +156,11 @@ export const GlobalChatMessagesList = ({
                 size="xl"
                 radius="xl"
                 color="primary"
-                onClick={scrollToBottom}
+                onClick={() => scrollToBottom()}
                 style={{
                   position: 'absolute',
-                  bottom: rem(20),
-                  right: rem(20),
+                  bottom: rem(1),
+                  right: rem(1),
                   zIndex: 100000,
                 }}
               >

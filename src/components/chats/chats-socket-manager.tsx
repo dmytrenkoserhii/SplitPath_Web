@@ -60,6 +60,17 @@ export const ChatsSocketManager = () => {
       queryClient.setQueryData<ChatPreview[]>(
         [ReactQueryTags.CHAT_PREVIEWS],
         (oldData) => {
+          const chatExists = oldData?.some(
+            (chatPreview) => chatPreview.userId === chatPartnerId
+          );
+
+          if (!chatExists) {
+            queryClient.invalidateQueries({
+              queryKey: [ReactQueryTags.CHAT_PREVIEWS],
+            });
+            return oldData;
+          }
+
           return oldData?.map((chatPreview) =>
             chatPreview.userId === chatPartnerId
               ? {

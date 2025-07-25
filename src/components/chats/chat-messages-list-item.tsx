@@ -4,6 +4,7 @@ import { Stack, Paper, Group, Text } from '@mantine/core';
 import { PrivateMessage } from '@/types/chats';
 import { useInView } from 'react-intersection-observer';
 import React from 'react';
+import { Check, CheckCheck } from 'lucide-react';
 
 interface ChatMessagesListItemProps {
   message: PrivateMessage;
@@ -45,9 +46,19 @@ export const ChatMessagesListItem = ({
     <Stack align={messagePosition} gap='xs' ref={ref}>
       <Group justify={messagePosition}>
         {isCurrentUser && (
-          <Text size='xs' c='dimmed' mt='auto' pb='xs'>
-            {messageTime}
-          </Text>
+          <Group mt='auto' pb='xs' align='center' justify='center' gap='xs'>
+            {message.read ? (
+              <CheckCheck
+                size={16}
+                style={{ color: 'var(--mantine-color-secondary-5)' }}
+              />
+            ) : (
+              <Check size={16} />
+            )}
+            <Text size='xs' c='dimmed' mt='auto'>
+              {messageTime}
+            </Text>
+          </Group>
         )}
         <Paper
           p='sm'
@@ -70,9 +81,11 @@ export const ChatMessagesListItem = ({
           </Text>
         </Paper>
         {!isCurrentUser && (
-          <Text size='xs' c='dimmed' mt='auto' pb='xs'>
-            {messageTime}
-          </Text>
+          <Group mt='auto' pb='xs'>
+            <Text size='xs' c='dimmed' mt='auto'>
+              {messageTime}
+            </Text>
+          </Group>
         )}
       </Group>
     </Stack>

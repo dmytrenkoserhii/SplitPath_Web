@@ -1,11 +1,18 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
+
 import { Stack } from '@mantine/core';
-import { useNavbarState } from '@/hooks';
-import { NAVIGATION_LINKS } from '@/constants';
-import { NavigationLink } from '@/components/layout/navigation-link';
-import { LogoutButton, EmailVerificationAlert } from '@/components/auth';
 import { useMediaQuery } from '@mantine/hooks';
+
+import { useQuery } from '@tanstack/react-query';
+
+import { EmailVerificationAlert, LogoutButton } from '@/components/auth';
+import { NavigationLink } from '@/components/layout/navigation-link';
+import { NAVIGATION_LINKS } from '@/constants';
+import { FriendRequestDirection, FriendStatus, ReactQueryTags } from '@/enums';
+import { useNavbarState } from '@/hooks';
+import { chatsService, friendsService } from '@/services';
 import { User } from '@/types/user';
 
 interface NavbarProps {
@@ -18,8 +25,31 @@ interface NavbarProps {
 export const Navbar = ({ user }: NavbarProps) => {
   const { isNavbarOpen } = useNavbarState();
   const isMobile = useMediaQuery('(max-width: 48rem)');
+  const pathname = usePathname();
 
   const showNavbar = isMobile ? isNavbarOpen : false;
+
+  const { data: chatsPreviews } = useQuery({
+    queryKey: [ReactQueryTags.CHAT_PREVIEWS],
+    queryFn: () => chatsService().getChatPreviews(),
+  });
+
+  const { data: friendsRequestsIncoming } = useQuery({
+    queryKey: [ReactQueryTags.FRIEND_REQUESTS_INCOMING],
+    queryFn: () =>
+      friendsService().getFriendRequests({
+        status: FriendStatus.PENDING,
+        direction: FriendRequestDirection.INCOMING,
+        page: 1,
+        limit: 1000,
+      }),
+  });
+
+  const totalUnreadMessages = chatsPreviews?.reduce(
+    (acc, chat) => acc + (chat.unreadCount > 0 ? 1 : 0),
+    0,
+  );
+  const totalFriendRequestsIncoming = friendsRequestsIncoming?.data.items.length;
 
   return (
     <div
@@ -30,20 +60,26 @@ export const Navbar = ({ user }: NavbarProps) => {
         top: 60,
         left: 0,
         width: '100%',
-        // 100vh - 60px (header height) - 60px (footer height)
-        height: 'calc(100vh - 60px - 60px)',
+        height: 'calc(100dvh - 60px - 60px)',
         background: 'var(--mantine-color-body)',
         zIndex: 100000,
       }}
     >
-      <Stack justify='space-between' h='100%'>
+      <Stack justify="space-between" h="100%">
         <Stack>
-          {user && !user.isEmailVerified && (
-            <EmailVerificationAlert />
-          )}
-          {NAVIGATION_LINKS.map((link) => (
-            <NavigationLink key={link.href} link={link} />
-          ))}
+          {user && !user.isEmailVerified && <EmailVerificationAlert />}
+          {NAVIGATION_LINKS.map((link) => {
+            const isActive = pathname === link.href;
+            let badgeContent;
+
+            if (link.href === '/chats') {
+              badgeContent = totalUnreadMessages;
+            } else if (link.href === '/friends') {
+              badgeContent = totalFriendRequestsIncoming;
+            }
+
+            return <NavigationLink key={link.href} link={{ ...link, badgeContent, isActive }} />;
+          })}
         </Stack>
         <Stack>
           <LogoutButton />

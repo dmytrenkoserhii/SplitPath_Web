@@ -24,6 +24,7 @@ interface ChatMessagesListProps {
   friend: User;
   onScrollToTop: () => void;
   isFetchingNextPage: boolean;
+  isFetching: boolean;
 }
 
 // TODO: I have a problem with scroll position when new messages are fetched
@@ -34,6 +35,7 @@ export const ChatMessagesList = ({
   friend,
   onScrollToTop,
   isFetchingNextPage,
+  isFetching,
 }: ChatMessagesListProps) => {
   const { addMessageToMarkAsRead } = useMarkMessagesAsRead();
 
@@ -102,13 +104,14 @@ export const ChatMessagesList = ({
   return (
     <Paper w='100%' h='100%' withBorder style={{ position: 'relative' }}>
       <LoadingOverlay
-        visible={isFetchingNextPage}
+        visible={isFetching || isFetchingNextPage}
         zIndex={100001}
         overlayProps={{ radius: 'sm', blur: 1 }}
+        h='100%'
       />
 
       <Stack h='100%' p='sm' data-testid='chat-messages-list'>
-        {!Boolean(messages.length) && (
+        {!Boolean(messages.length) && !isFetching && (
           <Center h='100%'>
             <Title order={3}>
               Say hi to{' '}

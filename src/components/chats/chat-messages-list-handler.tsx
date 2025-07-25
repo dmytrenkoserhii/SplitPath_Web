@@ -21,6 +21,7 @@ export const ChatMessagesListHandler = ({
   const {
     data,
     error,
+    isFetching,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -70,12 +71,14 @@ export const ChatMessagesListHandler = ({
     <Box
       data-testid='chat-messages-list-handler'
       mah='calc(100dvh - 60px - 60px - 35px - 100px)'
+      h='100%'
     >
       <ChatMessagesList
         messages={allMessages}
         currentUserId={currentUserId}
         friend={friend}
         isFetchingNextPage={isFetchingNextPage}
+        isFetching={isFetching}
         onScrollToTop={handleScrollToTop}
       />
     </Box>

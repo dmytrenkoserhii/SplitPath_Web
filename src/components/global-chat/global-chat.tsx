@@ -37,7 +37,7 @@ export const GlobalChat = () => {
   >({
     queryKey: [ReactQueryTags.GLOBAL_CHAT_MESSAGES],
     queryFn: async ({ pageParam }) => {
-      return globalChatService().getAllMessages(pageParam, 20);
+      return globalChatService().getAllMessages(pageParam, 25);
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
@@ -83,8 +83,8 @@ export const GlobalChat = () => {
         <GlobalChatInput />
       </Modal>
 
-      <ActionIcon variant="filled" color="secondary" radius="xl" size="lg" onClick={open}>
-        <MessageCircle size={18} />
+      <ActionIcon variant="filled" color="secondary" radius="xl" size="xl" onClick={open}>
+        <MessageCircle size={24} />
       </ActionIcon>
     </>
   );
