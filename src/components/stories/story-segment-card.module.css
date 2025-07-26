@@ -12,9 +12,7 @@
 }
 
 .choiceButton {
-  /* 👇 Increased min-height to make buttons taller */
   min-height: 80px;
-  /* 👇 Set a fixed height to auto so it can grow */
   height: auto;
   width: 100%;
   white-space: normal;
@@ -22,7 +20,6 @@
   font-size: var(--mantine-font-size-md);
 }
 
-/* 👇 Add this new rule */
 .choiceButton :global(.mantine-Button-label) {
   white-space: normal;
   height: auto;
