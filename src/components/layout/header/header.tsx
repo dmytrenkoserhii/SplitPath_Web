@@ -5,7 +5,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { AppShell, Box, Burger, Button, Group } from '@mantine/core';
+import { Anchor, AppShell, Box, Burger, Button, Group } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 
 import { useQuery } from '@tanstack/react-query';
@@ -60,7 +60,15 @@ export const Header = ({ user }: HeaderProps) => {
       <Group h="100%" px="md" justify="space-between">
         <Group>
           <Burger opened={isNavbarOpen} onClick={handleBurgerClick} hiddenFrom="sm" size="sm" />
-          <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>SplitPath</span>
+          <Anchor
+            component={Link}
+            href="/stories/selection"
+            prefetch={false}
+            style={{ fontWeight: 'bold', fontSize: '1.2rem' }}
+            c="primary"
+          >
+            SplitPath
+          </Anchor>
         </Group>
 
         <Group gap="md" flex={1} justify="center" style={{ display: isMobile ? 'none' : 'flex' }}>
@@ -76,8 +84,10 @@ export const Header = ({ user }: HeaderProps) => {
           })}
         </Group>
 
-        <Group style={{ display: isMobile ? 'none' : 'flex' }}>
-          {user && !user.isEmailVerified && <EmailVerificationAlert w="auto" />}
+        <Group>
+          {user && !user.isEmailVerified && (
+            <EmailVerificationAlert w="auto" style={{ display: isMobile ? 'none' : 'flex' }} />
+          )}
           <Box style={{ display: isMobile ? 'none' : 'flex' }}>
             {!user ? (
               <Link href="/sign-in">

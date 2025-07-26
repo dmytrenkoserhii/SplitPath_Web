@@ -1,8 +1,10 @@
 'use client';
 
-import { Button, ButtonProps } from '@mantine/core';
-import { X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+
+import { Button, ButtonProps } from '@mantine/core';
+
+import { X } from 'lucide-react';
 
 type EmailVerificationAlertProps = Omit<ButtonProps, 'onClick'>;
 
@@ -12,12 +14,13 @@ export const EmailVerificationAlert = (props: EmailVerificationAlertProps) => {
   return (
     <Button
       rightSection={<X size={18} />}
-      variant='light'
+      variant="light"
       color="red"
       onClick={() => router.push('/email-confirmation')}
+      size="xs"
       {...props}
     >
       EMAIL NOT VERIFIED
     </Button>
   );
-}; 
+};

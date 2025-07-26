@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { Badge, NavLink } from '@mantine/core';
 
+import { useNavbarState } from '@/hooks';
 import { NavigationLink as NavigationLinkType } from '@/types/shared';
 
 import classes from '../header/Header.module.css';
@@ -14,6 +15,9 @@ interface NavbarItemProps {
 }
 
 export const NavbarItem = ({ link, pathname }: NavbarItemProps) => {
+  const { setNavbarOpen } = useNavbarState();
+  const handleClose = () => setNavbarOpen(false);
+
   if (link.sublinks) {
     const isGroupActive = link.sublinks.some((sub) => pathname.startsWith(sub.href!));
     return (
@@ -45,6 +49,7 @@ export const NavbarItem = ({ link, pathname }: NavbarItemProps) => {
                   marginTop: '-0.5rem',
                 },
               }}
+              onClick={handleClose}
             />
           );
         })}
@@ -71,6 +76,7 @@ export const NavbarItem = ({ link, pathname }: NavbarItemProps) => {
           </Badge>
         ) : undefined
       }
+      onClick={handleClose}
     />
   );
 };

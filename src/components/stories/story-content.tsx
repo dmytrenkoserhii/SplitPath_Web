@@ -146,7 +146,7 @@ export function StoryContent({ storyId }: StoryContentProps) {
   return (
     <Stack gap="xl">
       <Box>
-        <Title order={2} mb="md">
+        <Title order={2} ta="center">
           {story.title}
         </Title>
         {isStoryComplete && (

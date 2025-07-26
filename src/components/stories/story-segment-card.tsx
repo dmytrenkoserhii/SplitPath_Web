@@ -29,11 +29,23 @@ export function StorySegmentCard({
     router.push('/stories/selection');
   };
 
+  console.log(segment.text);
+  const paragraphs = segment.text
+    // This regex handles both single and double newlines as separators
+    .split(/\n\s*\n/)
+    // This removes any empty strings that might result from the split
+    .filter((p) => p.trim() !== '');
+  console.log(paragraphs);
+
   if (isFinalSegment) {
     return (
       <Card className={styles.card} shadow="sm" p="lg" radius="md" withBorder mb="md">
         <Stack>
-          <Text size="lg">{segment.text}</Text>
+          {paragraphs.map((paragraph, index) => (
+            <Text key={index} size="lg" style={{ lineHeight: 1.6 }}>
+              {paragraph}
+            </Text>
+          ))}
           <Stack gap="md">
             <Title order={3} c="green" ta="center">
               🎉 Adventure Complete!
@@ -55,7 +67,11 @@ export function StorySegmentCard({
   return (
     <Card className={styles.card} shadow="sm" p="lg" radius="md" withBorder mb="md">
       <Stack>
-        <Text size="lg">{segment.text}</Text>
+        {paragraphs.map((paragraph, index) => (
+          <Text key={index} size="lg" style={{ lineHeight: 1.6 }}>
+            {paragraph}
+          </Text>
+        ))}
         <Stack gap="md">
           <Text size="sm" fw={500} c="dimmed">
             {shouldShowActiveChoices ? 'Choose your next action:' : 'Available choices:'}
@@ -73,7 +89,8 @@ export function StorySegmentCard({
                   size="sm"
                   onClick={() => (shouldShowActiveChoices ? onChoiceSelect(choice) : undefined)}
                   disabled={isDisabled}
-                  className={`${styles.choiceButton} ${!shouldShowActiveChoices && !isSelected ? styles.inactiveChoiceButton : ''}`}
+                  className={`${styles.choiceButton} ${!shouldShowActiveChoices && !isSelected ? styles.inactiveChoiceButton : ''} ${isSelected ? styles.selectedChoiceButton : ''}`}
+                  loading={isGenerating}
                 >
                   {choice}
                 </Button>
