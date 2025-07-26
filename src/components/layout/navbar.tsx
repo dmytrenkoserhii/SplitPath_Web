@@ -1,19 +1,21 @@
 'use client';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { Stack } from '@mantine/core';
+import { Badge, Box, NavLink, Stack } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 
 import { useQuery } from '@tanstack/react-query';
 
 import { EmailVerificationAlert, LogoutButton } from '@/components/auth';
-import { NavigationLink } from '@/components/layout/navigation-link';
 import { NAVIGATION_LINKS } from '@/constants';
 import { FriendRequestDirection, FriendStatus, ReactQueryTags } from '@/enums';
 import { useNavbarState } from '@/hooks';
 import { chatsService, friendsService } from '@/services';
 import { User } from '@/types/user';
+
+import classes from './Header.module.css';
 
 interface NavbarProps {
   user: User;
@@ -69,16 +71,67 @@ export const Navbar = ({ user }: NavbarProps) => {
         <Stack>
           {user && !user.isEmailVerified && <EmailVerificationAlert />}
           {NAVIGATION_LINKS.map((link) => {
-            const isActive = pathname === link.href;
-            let badgeContent;
-
-            if (link.href === '/chats') {
-              badgeContent = totalUnreadMessages;
-            } else if (link.href === '/friends') {
-              badgeContent = totalFriendRequestsIncoming;
+            if (link.sublinks) {
+              const isGroupActive = link.sublinks.some((sub) => pathname.startsWith(sub.href!));
+              return (
+                <NavLink
+                  key={link.label}
+                  label={link.label}
+                  leftSection={link.icon}
+                  childrenOffset={28}
+                  defaultOpened={isGroupActive}
+                  classNames={{ root: classes.link }}
+                  data-active={isGroupActive || undefined}
+                >
+                  {link.sublinks.map((sublink) => (
+                    <NavLink
+                      key={sublink.label}
+                      component={Link}
+                      href={sublink.href!}
+                      label={sublink.label}
+                      leftSection={sublink.icon}
+                      active={pathname === sublink.href}
+                      classNames={{ root: classes.link }}
+                      styles={{
+                        root: {
+                          marginBottom: '1rem',
+                          marginTop: '-0.5rem',
+                        },
+                      }}
+                    />
+                  ))}
+                </NavLink>
+              );
             }
 
-            return <NavigationLink key={link.href} link={{ ...link, badgeContent, isActive }} />;
+            if (link.href === '/chats') {
+              link.badgeContent = totalUnreadMessages;
+            } else if (link.href === '/friends') {
+              link.badgeContent = totalFriendRequestsIncoming;
+            }
+
+            const isBadgeVisible =
+              link.badgeContent !== undefined &&
+              link.badgeContent !== null &&
+              link.badgeContent !== 0;
+            return (
+              <NavLink
+                key={link.label}
+                component={Link}
+                href={link.href!}
+                label={link.label}
+                leftSection={link.icon}
+                active={pathname === link.href}
+                classNames={{ root: classes.link }}
+                rightSection={
+                  isBadgeVisible ? (
+                    <Badge size="sm" variant="filled" radius="xl" color="secondary">
+                      {link.badgeContent}
+                    </Badge>
+                  ) : undefined
+                }
+              />
+            );
           })}
         </Stack>
         <Stack>

@@ -5,9 +5,12 @@ import { Badge, NavLink } from '@mantine/core';
 import { NavigationLink as NavigationLinkInterface } from '@/types/shared';
 
 export const NavigationLink = ({ link }: { link: NavigationLinkInterface }) => {
+  if (!link.href) {
+    return null;
+  }
+
   const isBadgeVisible =
     link.badgeContent !== undefined && link.badgeContent !== null && link.badgeContent !== 0;
-  console.log(link.isActive);
 
   return (
     <span style={{ position: 'relative' }}>

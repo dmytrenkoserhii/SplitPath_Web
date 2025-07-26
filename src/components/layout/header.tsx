@@ -5,10 +5,24 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { AppShell, Box, Burger, Button, Group } from '@mantine/core';
+import {
+  AppShell,
+  Badge,
+  Box,
+  Burger,
+  Button,
+  Center,
+  Group,
+  HoverCard,
+  Stack,
+  Text,
+  UnstyledButton,
+} from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 
 import { useQuery } from '@tanstack/react-query';
+
+import { ChevronDown } from 'lucide-react';
 
 import { NAVIGATION_LINKS } from '@/constants';
 import { FriendRequestDirection, FriendStatus, ReactQueryTags } from '@/enums';
@@ -18,7 +32,7 @@ import { User } from '@/types/user';
 
 import { EmailVerificationAlert, LogoutButton } from '../auth';
 import { ThemeToggle } from '../ui';
-import { NavigationLink } from './navigation-link';
+import classes from './Header.module.css';
 
 interface HeaderProps {
   user: User;
@@ -65,16 +79,96 @@ export const Header = ({ user }: HeaderProps) => {
 
         <Group gap="md" flex={1} justify="center" style={{ display: isMobile ? 'none' : 'flex' }}>
           {NAVIGATION_LINKS.map((link) => {
-            const isActive = pathname === link.href;
-            let badgeContent;
-
-            if (link.href === '/chats') {
-              badgeContent = totalUnreadMessages;
-            } else if (link.href === '/friends') {
-              badgeContent = totalFriendRequestsIncoming;
+            if (link.sublinks) {
+              const isGroupActive = link.sublinks.some((sub) => pathname.startsWith(sub.href!));
+              return (
+                <HoverCard
+                  key={link.label}
+                  width={300}
+                  position="bottom"
+                  radius="md"
+                  shadow="md"
+                  withinPortal
+                >
+                  <HoverCard.Target>
+                    <a href="#" className={classes.link} data-active={isGroupActive || undefined}>
+                      <Center inline>
+                        <Box component="span" mr={5}>
+                          {link.label}
+                        </Box>
+                        <ChevronDown style={{ width: '16px', height: '16px' }} />
+                      </Center>
+                    </a>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown style={{ overflow: 'hidden' }}>
+                    <Stack gap="sm">
+                      {link.sublinks.map((sublink) => {
+                        const isSublinkActive = pathname === sublink.href;
+                        return (
+                          <UnstyledButton
+                            component={Link}
+                            href={sublink.href!}
+                            key={sublink.label}
+                            className={classes.subLink}
+                            data-active={isSublinkActive || undefined}
+                          >
+                            <Group wrap="nowrap" align="center">
+                              <Box mr="sm" pt="xs">
+                                {sublink.icon}
+                              </Box>
+                              <div>
+                                <Text size="sm" fw={500}>
+                                  {sublink.label}
+                                </Text>
+                                <Text size="xs" c="dimmed">
+                                  {sublink.description}
+                                </Text>
+                              </div>
+                            </Group>
+                          </UnstyledButton>
+                        );
+                      })}
+                    </Stack>
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              );
             }
 
-            return <NavigationLink key={link.href} link={{ ...link, badgeContent, isActive }} />;
+            if (!link.href) return null;
+
+            const isActive = pathname === link.href;
+            if (link.href === '/chats') {
+              link.badgeContent = totalUnreadMessages;
+            } else if (link.href === '/friends') {
+              link.badgeContent = totalFriendRequestsIncoming;
+            }
+
+            const isBadgeVisible =
+              link.badgeContent !== undefined &&
+              link.badgeContent !== null &&
+              link.badgeContent !== 0;
+            return (
+              <Link
+                href={link.href}
+                key={link.href}
+                className={classes.link}
+                data-active={isActive || undefined}
+              >
+                <span style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  {link.label}
+                  {isBadgeVisible && (
+                    <Badge
+                      style={{ position: 'absolute', top: -15, right: -35 }}
+                      variant="filled"
+                      color="secondary"
+                      radius="xl"
+                    >
+                      {link.badgeContent}
+                    </Badge>
+                  )}
+                </span>
+              </Link>
+            );
           })}
         </Group>
 

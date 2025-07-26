@@ -15,17 +15,26 @@ export const NAVIGATION_LINKS: NavigationLink[] = [
   },
   {
     label: 'Stories',
-    href: '/stories/selection',
     icon: <Book />,
-  },
-  {
-    label: 'History',
-    href: '/stories/history',
-    icon: <History />,
-  },
-  {
-    label: 'Active',
-    href: '/stories',
-    icon: <BookOpen />,
+    sublinks: [
+      {
+        label: 'New Story',
+        href: '/stories/selection',
+        icon: <Book />,
+        description: 'Select a new story to begin.',
+      },
+      {
+        label: 'Active',
+        href: '/stories',
+        icon: <BookOpen />,
+        description: 'View your currently active stories.',
+      },
+      {
+        label: 'History',
+        href: '/stories/history',
+        icon: <History />,
+        description: 'Review your past adventures.',
+      },
+    ],
   },
 ];
