@@ -6,7 +6,7 @@ import { Badge, NavLink } from '@mantine/core';
 
 import { NavigationLink as NavigationLinkType } from '@/types/shared';
 
-import classes from './Header.module.css';
+import classes from '../header/Header.module.css';
 
 interface NavbarItemProps {
   link: NavigationLinkType;
@@ -30,6 +30,7 @@ export const NavbarItem = ({ link, pathname }: NavbarItemProps) => {
           const isSublinkActive = pathname === sublink.href;
           return (
             <NavLink
+              prefetch={false}
               key={sublink.label}
               component={Link}
               href={sublink.href!}
@@ -56,6 +57,7 @@ export const NavbarItem = ({ link, pathname }: NavbarItemProps) => {
   return (
     <NavLink
       key={link.label}
+      prefetch={false}
       component={Link}
       href={link.href!}
       label={link.label}

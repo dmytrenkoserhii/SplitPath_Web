@@ -44,6 +44,7 @@ export const HeaderItem = ({ link, pathname }: HeaderItemProps) => {
               return (
                 <UnstyledButton
                   component={Link}
+                  prefetch={false}
                   href={sublink.href!}
                   key={sublink.label}
                   className={classes.subLink}
@@ -79,6 +80,7 @@ export const HeaderItem = ({ link, pathname }: HeaderItemProps) => {
     <Link
       href={link.href}
       key={link.href}
+      prefetch={false}
       className={classes.link}
       data-active={link.isActive || undefined}
     >
