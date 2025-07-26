@@ -1,6 +1,8 @@
-import { ServerError } from '@/components/auth';
-import { Paper, ScrollArea, GridCol, Grid } from '@mantine/core';
 import { redirect } from 'next/navigation';
+
+import { Grid, GridCol, Paper, ScrollArea } from '@mantine/core';
+
+import { ServerError } from '@/components/auth';
 import { ChatsListHandler } from '@/components/chats/chats-list-handler';
 
 export default async function ChatsLayout({
@@ -22,12 +24,8 @@ export default async function ChatsLayout({
     return (
       <Grid>
         <GridCol span={3}>
-          <Paper
-            withBorder
-            p='sm'
-            style={{ height: 'calc(100dvh - 60px - 60px - 35px)' }}
-          >
-            <ScrollArea scrollbarSize={3} scrollHideDelay={2000} h='100%'>
+          <Paper withBorder p="sm" style={{ height: 'calc(100dvh - 60px - 60px - 35px)' }}>
+            <ScrollArea scrollbarSize={3} scrollHideDelay={2000} h="100%">
               <ChatsListHandler id={Number(id)} />
             </ScrollArea>
           </Paper>

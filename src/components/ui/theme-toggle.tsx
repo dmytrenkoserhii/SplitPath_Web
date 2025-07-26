@@ -1,12 +1,10 @@
 'use client';
 
-import {
-  ActionIcon,
-  useComputedColorScheme,
-  useMantineColorScheme,
-} from '@mantine/core';
-import { Sun, Moon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
+import { ActionIcon, useComputedColorScheme, useMantineColorScheme } from '@mantine/core';
+
+import { Moon, Sun } from 'lucide-react';
 
 export const ThemeToggle = () => {
   const { setColorScheme } = useMantineColorScheme();
@@ -22,9 +20,9 @@ export const ThemeToggle = () => {
   if (!mounted) {
     return (
       <ActionIcon
-        variant='default'
-        size='xl'
-        aria-label='Loading theme toggle'
+        variant="default"
+        size="xl"
+        aria-label="Loading theme toggle"
         style={{ visibility: 'hidden' }}
       >
         <Sun size={20} />
@@ -34,12 +32,10 @@ export const ThemeToggle = () => {
 
   return (
     <ActionIcon
-      onClick={() =>
-        setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')
-      }
-      variant='default'
-      size='xl'
-      aria-label='Toggle color scheme'
+      onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
+      variant="default"
+      size="xl"
+      aria-label="Toggle color scheme"
     >
       {computedColorScheme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
     </ActionIcon>

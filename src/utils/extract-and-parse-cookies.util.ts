@@ -1,4 +1,5 @@
 import { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies';
+
 import { convertObjectKeysToCamelCaseAndConvertStringValuesToType } from './convert-object.util';
 
 /**
@@ -9,10 +10,7 @@ import { convertObjectKeysToCamelCaseAndConvertStringValuesToType } from './conv
  * @param cookieNames An array of cookie names to extract and parse.
  * @returns An array of `ResponseCookie` objects for the specified cookie names found in the string.
  */
-export function extractAndParseCookies(
-  cookieString: string,
-  cookieNames: string[]
-) {
+export function extractAndParseCookies(cookieString: string, cookieNames: string[]) {
   const cookies: ResponseCookie[] = [];
 
   const individualCookies = cookieString.split(/,\s*(?=[^;]+=[^;]+)/);
@@ -46,9 +44,7 @@ export function extractAndParseCookies(
       attributes.name = name;
       attributes.value = value;
 
-      cookies.push(
-        convertObjectKeysToCamelCaseAndConvertStringValuesToType(attributes)
-      );
+      cookies.push(convertObjectKeysToCamelCaseAndConvertStringValuesToType(attributes));
     }
   });
 

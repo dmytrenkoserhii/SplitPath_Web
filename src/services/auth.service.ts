@@ -1,6 +1,7 @@
 import { XiorResponse } from 'xior';
-import { SignUpDataType, SignInFormSchemaType } from '@/schemas/auth';
+
 import { xiorClient } from '@/lib';
+import { SignInFormSchemaType, SignUpDataType } from '@/schemas/auth';
 import { User } from '@/types/user';
 
 interface AuthApi {
@@ -58,8 +59,8 @@ const forgotPassword = (email: string) => {
 };
 
 const resetPassword = (token: string, password: string) => {
-  return xiorClient.post<void>(`auth/reset-password`, { 
+  return xiorClient.post<void>(`auth/reset-password`, {
     token,
-    password 
+    password,
   });
 };

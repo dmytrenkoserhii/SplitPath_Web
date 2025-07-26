@@ -1,8 +1,10 @@
 'use client';
 
-import { chatsService } from '@/services';
-import { useDebouncedCallback } from '@mantine/hooks';
 import React from 'react';
+
+import { useDebouncedCallback } from '@mantine/hooks';
+
+import { chatsService } from '@/services';
 
 export const useMarkMessagesAsRead = () => {
   const messagesToMarkReadRef = React.useRef<number[]>([]);
@@ -29,7 +31,7 @@ export const useMarkMessagesAsRead = () => {
         markMessagesAsReadDebounced();
       }
     },
-    [markMessagesAsReadDebounced]
+    [markMessagesAsReadDebounced],
   );
 
   return { addMessageToMarkAsRead };

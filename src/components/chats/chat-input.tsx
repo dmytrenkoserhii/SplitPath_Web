@@ -1,13 +1,17 @@
 'use client';
 
 import React from 'react';
-import { TextInput, ActionIcon, Group, Paper } from '@mantine/core';
-import { Send } from 'lucide-react';
+
+import { ActionIcon, Group, Paper, TextInput } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
+
 import { useMutation } from '@tanstack/react-query';
+
+import { Send } from 'lucide-react';
+
+import { getPrivateChatsSocket } from '@/lib';
 import { chatsService } from '@/services/chats.service';
 import { CreateMessagePayload, TypingStatusChangePayload } from '@/types/chats';
-import { getPrivateChatsSocket } from '@/lib';
-import { useDebouncedValue } from '@mantine/hooks';
 
 interface ChatInputProps {
   receiverId: number;
@@ -24,8 +28,7 @@ export function ChatInput({ receiverId, onMessageSent }: ChatInputProps) {
   const privateChatsSocket = React.useMemo(() => getPrivateChatsSocket(), []);
 
   const sendMessageMutation = useMutation({
-    mutationFn: (newMessage: CreateMessagePayload) =>
-      chatsService().sendMessage(newMessage),
+    mutationFn: (newMessage: CreateMessagePayload) => chatsService().sendMessage(newMessage),
     onSuccess: () => {
       setMessage('');
       if (onMessageSent) {
@@ -89,26 +92,26 @@ export function ChatInput({ receiverId, onMessageSent }: ChatInputProps) {
   }, [message, sendMessageMutation.isPending]);
 
   return (
-    <Paper p='xs' withBorder>
+    <Paper p="xs" withBorder>
       <form onSubmit={handleSubmit}>
-        <Group gap='xs'>
+        <Group gap="xs">
           <TextInput
-            placeholder='Type a message...'
+            placeholder="Type a message..."
             value={message}
             onChange={(e) => setMessage(e.currentTarget.value)}
             style={{ flex: 1 }}
             disabled={sendMessageMutation.isPending}
-            autoComplete='off'
+            autoComplete="off"
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             ref={inputRef}
           />
           <ActionIcon
-            type='submit'
-            radius='xl'
-            variant='filled'
-            color='secondary'
-            size='lg'
+            type="submit"
+            radius="xl"
+            variant="filled"
+            color="secondary"
+            size="lg"
             disabled={!message.trim() || sendMessageMutation.isPending}
             loading={sendMessageMutation.isPending}
           >

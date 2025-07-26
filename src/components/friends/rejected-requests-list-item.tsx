@@ -1,10 +1,11 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { Avatar, Box, Button, Group, Paper, Stack, Text } from '@mantine/core';
 
-import { User } from '@/types/user';
 import { Friend } from '@/types/friends';
-import { useRouter } from 'next/navigation';
+import { User } from '@/types/user';
 
 interface RejectedRequestsListItemProps {
   friend: Friend;
@@ -35,55 +36,39 @@ export const RejectedRequestsListItem = ({
     onResend(friend.id);
   };
 
-  const userToDisplay =
-    friend.sender.id === currentUser.id ? friend.receiver : friend.sender;
+  const userToDisplay = friend.sender.id === currentUser.id ? friend.receiver : friend.sender;
   const actionButton =
     currentUser.id === friend.sender.id ? (
-      <Button
-        color='blue'
-        variant='outline'
-        radius='sm'
-        onClick={onResendClick}
-      >
+      <Button color="blue" variant="outline" radius="sm" onClick={onResendClick}>
         Resend
       </Button>
     ) : (
-      <Button
-        color='green'
-        variant='outline'
-        radius='sm'
-        onClick={onAcceptClick}
-      >
+      <Button color="green" variant="outline" radius="sm" onClick={onAcceptClick}>
         Accept
       </Button>
     );
 
   return (
-    <Paper
-      shadow='sm'
-      withBorder
-      style={{ cursor: 'pointer' }}
-      onClick={onFriendClick}
-    >
-      <Group justify='space-between' p='sm'>
-        <Group gap='sm'>
-          <Box pos='relative'>
+    <Paper shadow="sm" withBorder style={{ cursor: 'pointer' }} onClick={onFriendClick}>
+      <Group justify="space-between" p="sm">
+        <Group gap="sm">
+          <Box pos="relative">
             <Avatar
               src={userToDisplay.account?.avatarUrl}
-              size='md'
-              radius='xl'
-              color='initials'
+              size="md"
+              radius="xl"
+              color="initials"
               name={userToDisplay.account.username}
-              variant='outline'
+              variant="outline"
             />
           </Box>
           <Stack gap={0}>
             <Text fw={500}>{userToDisplay.account.username}</Text>
-            <Text c='dimmed'>{userToDisplay.email}</Text>
+            <Text c="dimmed">{userToDisplay.email}</Text>
           </Stack>
         </Group>
 
-        <Group gap='xs'>{actionButton}</Group>
+        <Group gap="xs">{actionButton}</Group>
       </Group>
     </Paper>
   );

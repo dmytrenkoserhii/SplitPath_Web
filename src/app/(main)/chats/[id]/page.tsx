@@ -1,8 +1,10 @@
-import { ServerError } from '@/components/auth';
-import { ChatMessagesListHandler, ChatInput } from '@/components/chats';
-import { usersService } from '@/services';
-import { Paper, Stack } from '@mantine/core';
 import { redirect } from 'next/navigation';
+
+import { Paper, Stack } from '@mantine/core';
+
+import { ServerError } from '@/components/auth';
+import { ChatInput, ChatMessagesListHandler } from '@/components/chats';
+import { usersService } from '@/services';
 
 interface ChatPageProps {
   params: {
@@ -28,17 +30,14 @@ export default async function ChatPage({ params }: ChatPageProps) {
     return (
       <Paper
         withBorder
-        p='sm'
+        p="sm"
         style={{
           height: 'calc(100dvh - 60px - 60px - 35px)',
           maxHeight: 'calc(100dvh - 60px - 60px - 35px)',
         }}
       >
-        <Stack h='100%' justify='space-between'>
-          <ChatMessagesListHandler
-            friend={friendUser}
-            currentUserId={currentUser.id}
-          />
+        <Stack h="100%" justify="space-between">
+          <ChatMessagesListHandler friend={friendUser} currentUserId={currentUser.id} />
           <ChatInput receiverId={Number(id)} />
         </Stack>
       </Paper>

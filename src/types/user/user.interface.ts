@@ -1,6 +1,7 @@
 import { Role } from '@/enums';
-import { Account } from './account.interface';
 import { Story } from '@/types/story';
+
+import { Account } from './account.interface';
 
 export interface User {
   id: number;

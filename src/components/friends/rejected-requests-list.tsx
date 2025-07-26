@@ -1,13 +1,16 @@
 'use client';
 
+import { Divider, Stack, Tabs } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { ReactQueryTags } from '@/enums';
 import { friendsService } from '@/services';
 import { Friend } from '@/types/friends';
 import { User } from '@/types/user';
-import { Tabs, Stack, Divider } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { RejectedRequestsListItem } from './rejected-requests-list-item';
-import { ReactQueryTags } from '@/enums';
 
 interface RejectedRequestsListProps {
   incomingRejected: Friend[];
@@ -81,19 +84,19 @@ export const RejectedRequestsList: React.FC<RejectedRequestsListProps> = ({
   };
 
   return (
-    <Tabs orientation='vertical' defaultValue='incoming' variant='pills'>
-      <Tabs.List mr='md'>
-        <Tabs.Tab value='incoming' color='red'>
+    <Tabs orientation="vertical" defaultValue="incoming" variant="pills">
+      <Tabs.List mr="md">
+        <Tabs.Tab value="incoming" color="red">
           Incoming ({incomingRejected.length})
         </Tabs.Tab>
-        <Tabs.Tab value='outgoing' color='red'>
+        <Tabs.Tab value="outgoing" color="red">
           Outgoing ({outgoingRejected.length})
         </Tabs.Tab>
       </Tabs.List>
 
-      <Divider orientation='vertical' />
+      <Divider orientation="vertical" />
 
-      <Tabs.Panel value='incoming'>
+      <Tabs.Panel value="incoming">
         <Stack>
           {incomingRejected.map((friend) => (
             <RejectedRequestsListItem
@@ -107,7 +110,7 @@ export const RejectedRequestsList: React.FC<RejectedRequestsListProps> = ({
         </Stack>
       </Tabs.Panel>
 
-      <Tabs.Panel value='outgoing'>
+      <Tabs.Panel value="outgoing">
         <Stack>
           {outgoingRejected.map((friend) => (
             <RejectedRequestsListItem

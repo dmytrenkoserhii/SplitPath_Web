@@ -1,19 +1,11 @@
 'use client';
 
-import {
-  Avatar,
-  Box,
-  Button,
-  Group,
-  Indicator,
-  Paper,
-  Stack,
-  Text,
-} from '@mantine/core';
-
-import { User } from '@/types/user';
-import { Friend } from '@/types/friends';
 import { useRouter } from 'next/navigation';
+
+import { Avatar, Box, Button, Group, Indicator, Paper, Stack, Text } from '@mantine/core';
+
+import { Friend } from '@/types/friends';
+import { User } from '@/types/user';
 
 interface FriendsListItemProps {
   friend: Friend;
@@ -46,60 +38,44 @@ export const FriendsListItem = ({
     onDelete(friend.id);
   };
 
-  const userToDisplay =
-    friend.sender.id === currentUser.id ? friend.receiver : friend.sender;
+  const userToDisplay = friend.sender.id === currentUser.id ? friend.receiver : friend.sender;
   const isFriendOnline = userToDisplay.isOnline === true;
 
   return (
-    <Paper
-      shadow='sm'
-      withBorder
-      style={{ cursor: 'pointer' }}
-      onClick={onFriendClick}
-    >
-      <Group justify='space-between' p='sm'>
-        <Group gap='sm'>
-          <Box pos='relative'>
+    <Paper shadow="sm" withBorder style={{ cursor: 'pointer' }} onClick={onFriendClick}>
+      <Group justify="space-between" p="sm">
+        <Group gap="sm">
+          <Box pos="relative">
             <Indicator
               size={12}
-              color='green'
+              color="green"
               withBorder
               offset={6}
-              position='bottom-end'
+              position="bottom-end"
               processing
               disabled={!isFriendOnline}
             >
               <Avatar
                 src={userToDisplay.account?.avatarUrl}
-                size='md'
-                radius='xl'
-                color='initials'
+                size="md"
+                radius="xl"
+                color="initials"
                 name={userToDisplay.account.username}
-                variant='outline'
+                variant="outline"
               />
             </Indicator>
           </Box>
           <Stack gap={0}>
             <Text fw={500}>{userToDisplay.account.username}</Text>
-            <Text c='dimmed'>{userToDisplay.email}</Text>
+            <Text c="dimmed">{userToDisplay.email}</Text>
           </Stack>
         </Group>
 
-        <Group gap='xs'>
-          <Button
-            color='blue'
-            variant='outline'
-            radius='sm'
-            onClick={onMessageClick}
-          >
+        <Group gap="xs">
+          <Button color="blue" variant="outline" radius="sm" onClick={onMessageClick}>
             Message
           </Button>
-          <Button
-            color='red'
-            variant='outline'
-            radius='sm'
-            onClick={onDeleteClick}
-          >
+          <Button color="red" variant="outline" radius="sm" onClick={onDeleteClick}>
             Delete
           </Button>
         </Group>

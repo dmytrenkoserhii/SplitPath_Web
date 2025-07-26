@@ -1,10 +1,13 @@
 'use client';
 
-import { Stack, Paper, Group, Text } from '@mantine/core';
-import { PrivateMessage } from '@/types/chats';
-import { useInView } from 'react-intersection-observer';
 import React from 'react';
+import { useInView } from 'react-intersection-observer';
+
+import { Group, Paper, Stack, Text } from '@mantine/core';
+
 import { Check, CheckCheck } from 'lucide-react';
+
+import { PrivateMessage } from '@/types/chats';
 
 interface ChatMessagesListItemProps {
   message: PrivateMessage;
@@ -43,26 +46,23 @@ export const ChatMessagesListItem = ({
   });
 
   return (
-    <Stack align={messagePosition} gap='xs' ref={ref}>
+    <Stack align={messagePosition} gap="xs" ref={ref}>
       <Group justify={messagePosition}>
         {isCurrentUser && (
-          <Group mt='auto' pb='xs' align='center' justify='center' gap='xs'>
+          <Group mt="auto" pb="xs" align="center" justify="center" gap="xs">
             {message.read ? (
-              <CheckCheck
-                size={16}
-                style={{ color: 'var(--mantine-color-secondary-5)' }}
-              />
+              <CheckCheck size={16} style={{ color: 'var(--mantine-color-secondary-5)' }} />
             ) : (
               <Check size={16} />
             )}
-            <Text size='xs' c='dimmed' mt='auto'>
+            <Text size="xs" c="dimmed" mt="auto">
               {messageTime}
             </Text>
           </Group>
         )}
         <Paper
-          p='sm'
-          radius='lg'
+          p="sm"
+          radius="lg"
           style={{
             maxWidth: '70%',
             borderTopRightRadius,
@@ -81,8 +81,8 @@ export const ChatMessagesListItem = ({
           </Text>
         </Paper>
         {!isCurrentUser && (
-          <Group mt='auto' pb='xs'>
-            <Text size='xs' c='dimmed' mt='auto'>
+          <Group mt="auto" pb="xs">
+            <Text size="xs" c="dimmed" mt="auto">
               {messageTime}
             </Text>
           </Group>

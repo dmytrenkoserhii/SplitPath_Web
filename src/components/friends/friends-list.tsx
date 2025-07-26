@@ -1,15 +1,19 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { Stack, Text } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+
+import { useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+
+import { ReactQueryTags } from '@/enums';
 import { friendsService } from '@/services';
 import { Friend } from '@/types/friends';
 import { User } from '@/types/user';
-import { notifications } from '@mantine/notifications';
-import { useQueryClient } from '@tanstack/react-query';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+
 import { FriendsListItem } from './friends-list-item';
-import { ReactQueryTags } from '@/enums';
 
 interface FriendsListProps {
   friends: Friend[];
@@ -26,8 +30,7 @@ export const FriendsList = ({ friends, currentUser }: FriendsListProps) => {
     mutationFn: async (friendId: number) => {
       const serviceResponse = await deleteFriend(friendId);
       if (!serviceResponse.response.ok) {
-        const errorMessage =
-          serviceResponse.statusText || 'Failed to delete friend.';
+        const errorMessage = serviceResponse.statusText || 'Failed to delete friend.';
         throw new Error(errorMessage);
       }
       return serviceResponse;
@@ -59,7 +62,7 @@ export const FriendsList = ({ friends, currentUser }: FriendsListProps) => {
 
   if (friends.length === 0) {
     return (
-      <Text c='dimmed' ta='center' py='xl'>
+      <Text c="dimmed" ta="center" py="xl">
         No friends yet
       </Text>
     );

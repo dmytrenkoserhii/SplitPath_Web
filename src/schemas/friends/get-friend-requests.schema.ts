@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { FriendStatus, FriendRequestDirection } from '@/enums';
+
+import { FriendRequestDirection, FriendStatus } from '@/enums';
 
 export const GetFriendRequestsSchema = z.object({
   status: z.nativeEnum(FriendStatus).optional(),

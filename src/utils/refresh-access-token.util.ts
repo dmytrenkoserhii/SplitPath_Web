@@ -1,7 +1,9 @@
-import { authService } from '@/services';
 import { NextResponse } from 'next/server';
-import { extractAndParseCookies } from './extract-and-parse-cookies.util';
+
+import { authService } from '@/services';
+
 import { appendCookiesToNextResponse } from './append-cookies-to-next-response.util';
+import { extractAndParseCookies } from './extract-and-parse-cookies.util';
 
 /**
  * Refreshes an access token by calling the refresh token endpoint of the authentication API.
@@ -12,21 +14,13 @@ import { appendCookiesToNextResponse } from './append-cookies-to-next-response.u
  * @param headers The `Headers` object containing the current refresh token cookie to be sent to the refresh API.
  * @returns A promise that resolves with the `NextResponse` including the new authentication cookies.
  */
-export const refreshAccessToken = async (
-  response: NextResponse,
-  headers: Headers
-) => {
+export const refreshAccessToken = async (response: NextResponse, headers: Headers) => {
   const refreshAccessTokenResponse = await authService().refreshAccessToken(headers);
-  const setCookieHeader = refreshAccessTokenResponse.headers
-    .getSetCookie()
-    .join('; ');
+  const setCookieHeader = refreshAccessTokenResponse.headers.getSetCookie().join('; ');
   const refreshedAuthCookies = extractAndParseCookies(setCookieHeader, [
     'access_token',
     'refresh_token',
   ]);
-  const newResponse = appendCookiesToNextResponse(
-    response,
-    refreshedAuthCookies
-  );
+  const newResponse = appendCookiesToNextResponse(response, refreshedAuthCookies);
   return newResponse;
 };

@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
+
 import { authService } from '@/services';
+
 import { appendCookiesToNextResponse } from './append-cookies-to-next-response.util';
 import { extractAndParseCookies } from './extract-and-parse-cookies.util';
 
@@ -14,9 +16,7 @@ import { extractAndParseCookies } from './extract-and-parse-cookies.util';
  */
 export const logout = async (response: NextResponse, headers: Headers) => {
   const refreshAccessTokenResponse = await authService().logout(headers);
-  const setCookieHeader = refreshAccessTokenResponse.headers
-    .getSetCookie()
-    .join('; ');
+  const setCookieHeader = refreshAccessTokenResponse.headers.getSetCookie().join('; ');
   const removedAuthCookies = extractAndParseCookies(setCookieHeader, [
     'access_token',
     'refresh_token',

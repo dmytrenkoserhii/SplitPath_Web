@@ -1,29 +1,23 @@
 import { XiorResponse } from 'xior';
+
 import { xiorClient } from '@/lib';
+import { CreateFriendRequestType, GetFriendRequestsType } from '@/schemas/friends';
 import { Friend } from '@/types/friends';
 import { PaginatedResponse } from '@/types/shared';
-import {
-  CreateFriendRequestType,
-  GetFriendRequestsType,
-} from '@/schemas/friends';
 
 interface FriendsApi {
-  sendFriendRequest: (
-    data: CreateFriendRequestType
-  ) => Promise<XiorResponse<Friend>>;
+  sendFriendRequest: (data: CreateFriendRequestType) => Promise<XiorResponse<Friend>>;
   acceptFriendRequest: (requestId: number) => Promise<XiorResponse<Friend>>;
   rejectFriendRequest: (requestId: number) => Promise<XiorResponse<Friend>>;
   deleteFriend: (friendId: number) => Promise<XiorResponse<Friend>>;
   getFriendsList: (
     page?: number,
-    limit?: number
+    limit?: number,
   ) => Promise<XiorResponse<PaginatedResponse<Friend>>>;
   getFriendRequests: (
-    params: GetFriendRequestsType
+    params: GetFriendRequestsType,
   ) => Promise<XiorResponse<PaginatedResponse<Friend>>>;
-  getFriendsOnlineStatus: () => Promise<
-    XiorResponse<{ [key: number]: boolean }>
-  >;
+  getFriendsOnlineStatus: () => Promise<XiorResponse<{ [key: number]: boolean }>>;
   resendFriendRequest: (requestId: number) => Promise<XiorResponse<Friend>>;
 }
 
