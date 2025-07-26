@@ -44,7 +44,7 @@ export const CreateStoryButton = ({ topic }: CreateStoryButtonProps) => {
   });
 
   return (
-    <Button onClick={() => startStory()} loading={isPending} fullWidth>
+    <Button onClick={() => startStory()} loading={isPending} fullWidth h={50} mih={50} size="lg">
       Start Adventure
     </Button>
   );

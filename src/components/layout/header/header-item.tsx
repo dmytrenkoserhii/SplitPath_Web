@@ -8,7 +8,7 @@ import { ChevronDown } from 'lucide-react';
 
 import { NavigationLink as NavigationLinkType } from '@/types/shared';
 
-import classes from './Header.module.css';
+import classes from './header.module.css';
 
 interface HeaderItemProps {
   link: NavigationLinkType;

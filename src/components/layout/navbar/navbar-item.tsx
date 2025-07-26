@@ -7,7 +7,7 @@ import { Badge, NavLink } from '@mantine/core';
 import { useNavbarState } from '@/hooks';
 import { NavigationLink as NavigationLinkType } from '@/types/shared';
 
-import classes from '../header/Header.module.css';
+import classes from '../header/header.module.css';
 
 interface NavbarItemProps {
   link: NavigationLinkType;
