@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { Box, Center, Loader, Stack, Text, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
@@ -18,6 +18,7 @@ interface StoryContentProps {
 
 export function StoryContent({ storyId }: StoryContentProps) {
   const queryClient = useQueryClient();
+  const initialSegmentGenerated = React.useRef(false);
 
   const {
     data: story,
@@ -96,7 +97,13 @@ export function StoryContent({ storyId }: StoryContentProps) {
   });
 
   useEffect(() => {
-    if (story && story.segments.length === 0 && !isGeneratingInitial) {
+    if (
+      story &&
+      story.segments.length === 0 &&
+      !isGeneratingInitial &&
+      !initialSegmentGenerated.current
+    ) {
+      initialSegmentGenerated.current = true;
       generateInitialSegment();
     }
   }, [story, isGeneratingInitial, generateInitialSegment]);

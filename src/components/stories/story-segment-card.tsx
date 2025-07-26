@@ -29,13 +29,7 @@ export function StorySegmentCard({
     router.push('/stories/selection');
   };
 
-  console.log(segment.text);
-  const paragraphs = segment.text
-    // This regex handles both single and double newlines as separators
-    .split(/\n\s*\n/)
-    // This removes any empty strings that might result from the split
-    .filter((p) => p.trim() !== '');
-  console.log(paragraphs);
+  const paragraphs = segment.text.split(/\n\s*\n/).filter((p) => p.trim() !== '');
 
   if (isFinalSegment) {
     return (

@@ -67,7 +67,7 @@ export const Header = ({ user }: HeaderProps) => {
             style={{ fontWeight: 'bold', fontSize: '1.2rem' }}
             c="primary"
           >
-            SplitPath
+            <img src="/splitpath-logo.svg" alt="logo" height={32} />
           </Anchor>
         </Group>
 

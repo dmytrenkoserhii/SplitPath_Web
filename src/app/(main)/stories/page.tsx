@@ -1,26 +1,37 @@
+import { redirect } from 'next/navigation';
+
 import { Box, Center, Text, Title } from '@mantine/core';
 
 import { ServerError } from '@/components/auth';
+import { StoryFilters } from '@/components/stories';
 import { StoryCardsList } from '@/components/stories/story-cards-list';
 import { Pagination } from '@/components/ui';
 import { StoryStatus } from '@/enums';
 import { storiesService } from '@/services/stories.service';
 
-type SearchParamsType = { page: string };
+type SearchParamsType = { page?: string; status?: string };
 
 interface StoriesPageProps {
   searchParams: SearchParamsType;
 }
 
 export default async function StoriesPage({ searchParams }: StoriesPageProps) {
+  const params = await searchParams;
+  if (!params.page || Number(params.page) < 1) {
+    redirect('/stories?page=1');
+  }
+
   try {
-    const currentPage = Number(searchParams.page) || 1;
+    const currentPage = Number(params.page);
     const itemsPerPage = 9;
+
+    const defaultStatuses = `${StoryStatus.NEW},${StoryStatus.IN_PROGRESS}`;
+    const statusParam = params.status || defaultStatuses;
 
     const storiesData = await storiesService().findAllPaginated({
       page: currentPage,
       limit: itemsPerPage,
-      status: StoryStatus.NEW,
+      status: statusParam,
     });
 
     if (!storiesData.items.length) {
@@ -40,15 +51,13 @@ export default async function StoriesPage({ searchParams }: StoriesPageProps) {
 
     return (
       <Box>
-        <Title c="tertiary" ta="center" mb="md">
+        <Title ta="center" mb="md">
           Active Stories
         </Title>
 
-        <Box
-          mb="md"
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-        >
-          <Text c="dimmed">{storiesData.meta.totalItems} stories found</Text>
+        <StoryFilters />
+
+        <Box mb="md" style={{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}>
           <Text c="dimmed" size="sm">
             Page {storiesData.meta.currentPage} of {storiesData.meta.totalPages}
           </Text>
@@ -56,12 +65,12 @@ export default async function StoriesPage({ searchParams }: StoriesPageProps) {
 
         <StoryCardsList stories={storiesData.items} />
 
-        {storiesData.meta.totalPages > 1 && (
+        {
           <Pagination
             currentPage={storiesData.meta.currentPage}
             totalPages={storiesData.meta.totalPages}
           />
-        )}
+        }
       </Box>
     );
   } catch (error) {

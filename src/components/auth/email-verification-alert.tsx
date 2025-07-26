@@ -13,7 +13,6 @@ export const EmailVerificationAlert = (props: EmailVerificationAlertProps) => {
 
   return (
     <Button
-      rightSection={<X size={18} />}
       variant="light"
       color="red"
       onClick={() => router.push('/email-confirmation')}
