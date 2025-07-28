@@ -1,13 +1,16 @@
 'use client';
 
+import { Divider, Stack, Tabs } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { ReactQueryTags } from '@/enums';
 import { friendsService } from '@/services';
 import { Friend } from '@/types/friends';
 import { User } from '@/types/user';
-import { Tabs, Stack, Divider } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { PendingRequestsListItem } from './pending-requests-list-item';
-import { ReactQueryTags } from '@/enums';
 
 interface PendingRequestsListProps {
   incomingRequests: Friend[];
@@ -21,8 +24,7 @@ export const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
   currentUser,
 }) => {
   const queryClient = useQueryClient();
-  const { acceptFriendRequest, rejectFriendRequest, deleteFriend } =
-    friendsService();
+  const { acceptFriendRequest, rejectFriendRequest, deleteFriend } = friendsService();
 
   const acceptRequestMutation = useMutation({
     mutationFn: (requestId: number) => acceptFriendRequest(requestId),
@@ -110,19 +112,15 @@ export const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
   };
 
   return (
-    <Tabs orientation='vertical' defaultValue='incoming' variant='pills'>
-      <Tabs.List mr='md'>
-        <Tabs.Tab value='incoming'>
-          Incoming ({incomingRequests.length})
-        </Tabs.Tab>
-        <Tabs.Tab value='outgoing'>
-          Outgoing ({outgoingRequests.length})
-        </Tabs.Tab>
+    <Tabs orientation="vertical" defaultValue="incoming" variant="pills">
+      <Tabs.List mr="md">
+        <Tabs.Tab value="incoming">Incoming ({incomingRequests.length})</Tabs.Tab>
+        <Tabs.Tab value="outgoing">Outgoing ({outgoingRequests.length})</Tabs.Tab>
       </Tabs.List>
 
-      <Divider orientation='vertical' />
+      <Divider orientation="vertical" />
 
-      <Tabs.Panel value='incoming'>
+      <Tabs.Panel value="incoming">
         <Stack>
           {incomingRequests.map((friend) => (
             <PendingRequestsListItem
@@ -137,7 +135,7 @@ export const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
         </Stack>
       </Tabs.Panel>
 
-      <Tabs.Panel value='outgoing'>
+      <Tabs.Panel value="outgoing">
         <Stack>
           {outgoingRequests.map((friend) => (
             <PendingRequestsListItem

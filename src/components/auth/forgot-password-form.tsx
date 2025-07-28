@@ -1,15 +1,15 @@
 'use client';
 
-import {
-  Button,
-  Stack,
-  TextInput,
-  Text,
-} from '@mantine/core';
+import { Button, Stack, Text, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
+
 import { useMutation } from '@tanstack/react-query';
-import { ForgotPasswordSchema, ForgotPasswordSchemaType } from '@/schemas/auth/forgot-password-form.schema';
+
+import {
+  ForgotPasswordSchema,
+  ForgotPasswordSchemaType,
+} from '@/schemas/auth/forgot-password-form.schema';
 import { authService } from '@/services';
 
 export const ForgotPasswordForm = () => {
@@ -21,7 +21,11 @@ export const ForgotPasswordForm = () => {
     validateInputOnChange: true,
   });
 
-  const { mutate: forgotPassword, isPending, isSuccess } = useMutation({
+  const {
+    mutate: forgotPassword,
+    isPending,
+    isSuccess,
+  } = useMutation({
     mutationFn: async (email: string) => {
       const result = await authService().forgotPassword(email);
       return result;
@@ -32,7 +36,7 @@ export const ForgotPasswordForm = () => {
         message: error.message,
         color: 'red',
       });
-    }
+    },
   });
 
   const handleSubmit = form.onSubmit((values) => {
@@ -43,8 +47,8 @@ export const ForgotPasswordForm = () => {
     return (
       <Stack gap="md">
         <Text ta="center">
-          We&apos;ve sent password reset instructions to your email address.
-          Please check your inbox and follow the instructions to reset your password.
+          We&apos;ve sent password reset instructions to your email address. Please check your inbox
+          and follow the instructions to reset your password.
         </Text>
       </Stack>
     );
@@ -52,21 +56,15 @@ export const ForgotPasswordForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Stack gap='md'>
+      <Stack gap="md">
         <TextInput
-          label='Email'
-          placeholder='your@email.com'
+          label="Email"
+          placeholder="your@email.com"
           required
           {...form.getInputProps('email')}
         />
 
-        <Button 
-          type='submit' 
-          fullWidth 
-          mt='xl' 
-          loading={isPending}
-          disabled={!form.isValid()}
-        >
+        <Button type="submit" fullWidth mt="xl" loading={isPending} disabled={!form.isValid()}>
           Send Reset Instructions
         </Button>
       </Stack>

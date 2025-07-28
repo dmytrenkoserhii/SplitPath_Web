@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 
 import { Avatar, Box, Button, Group, Paper, Stack, Text } from '@mantine/core';
 
-import { User } from '@/types/user';
 import { Friend } from '@/types/friends';
+import { User } from '@/types/user';
 
 interface PendingRequestsListItemProps {
   friend: Friend;
@@ -43,65 +43,44 @@ export const PendingRequestsListItem = ({
     onDeleteOutgoing(friend.id);
   };
 
-  const userToDisplay =
-    friend.sender.id === currentUser.id ? friend.receiver : friend.sender;
+  const userToDisplay = friend.sender.id === currentUser.id ? friend.receiver : friend.sender;
   const actionButtons =
     currentUser.id === friend.sender.id ? (
-      <Button
-        color='red'
-        variant='outline'
-        radius='sm'
-        onClick={onDeleteOutgoingClick}
-      >
+      <Button color="red" variant="outline" radius="sm" onClick={onDeleteOutgoingClick}>
         Delete
       </Button>
     ) : (
       <>
-        <Button
-          color='green'
-          variant='outline'
-          radius='sm'
-          onClick={onAcceptIncomingClick}
-        >
+        <Button color="green" variant="outline" radius="sm" onClick={onAcceptIncomingClick}>
           Accept
         </Button>
-        <Button
-          color='red'
-          variant='outline'
-          radius='sm'
-          onClick={onRejectIncomingClick}
-        >
+        <Button color="red" variant="outline" radius="sm" onClick={onRejectIncomingClick}>
           Reject
         </Button>
       </>
     );
 
   return (
-    <Paper
-      shadow='sm'
-      withBorder
-      style={{ cursor: 'pointer' }}
-      onClick={onFriendClick}
-    >
-      <Group justify='space-between' p='sm'>
-        <Group gap='sm'>
-          <Box pos='relative'>
+    <Paper shadow="sm" withBorder style={{ cursor: 'pointer' }} onClick={onFriendClick}>
+      <Group justify="space-between" p="sm">
+        <Group gap="sm">
+          <Box pos="relative">
             <Avatar
               src={userToDisplay.account?.avatarUrl}
-              size='md'
-              radius='xl'
-              color='initials'
+              size="md"
+              radius="xl"
+              color="initials"
               name={userToDisplay.account.username}
-              variant='outline'
+              variant="outline"
             />
           </Box>
           <Stack gap={0}>
             <Text fw={500}>{userToDisplay.account.username}</Text>
-            <Text c='dimmed'>{userToDisplay.email}</Text>
+            <Text c="dimmed">{userToDisplay.email}</Text>
           </Stack>
         </Group>
 
-        <Group gap='xs'>{actionButtons}</Group>
+        <Group gap="xs">{actionButtons}</Group>
       </Group>
     </Paper>
   );

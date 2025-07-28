@@ -1,4 +1,4 @@
-import { Card, CardSection, Box, Text } from '@mantine/core';
+import { Box, Card, CardSection, Text } from '@mantine/core';
 
 interface StoryPreviewProps {
   title: string;
@@ -6,13 +6,9 @@ interface StoryPreviewProps {
   imageUrl: string;
 }
 
-export const StoryPreview = ({
-  title,
-  description,
-  imageUrl,
-}: StoryPreviewProps) => {
+export const StoryPreview = ({ title, description, imageUrl }: StoryPreviewProps) => {
   return (
-    <Card shadow='md' padding='xl' radius='md' withBorder>
+    <Card shadow="md" padding="xl" radius="md" withBorder>
       <CardSection>
         <Box
           style={{
@@ -24,15 +20,15 @@ export const StoryPreview = ({
             color: 'white',
           }}
         >
-          <Text size='xl' fw={700}>
+          <Text size="xl" fw={700}>
             {title}
           </Text>
         </Box>
       </CardSection>
-      <Text fw={700} size='xl' mt='xl' mb='sm'>
+      <Text fw={700} size="xl" mt="xl" mb="sm">
         {title}
       </Text>
-      <Text size='md' c='dimmed' lh={1.6}>
+      <Text size="md" c="dimmed" lh={1.6}>
         {description}
       </Text>
     </Card>

@@ -1,15 +1,17 @@
 'use client';
 
-import {
-  CreateFriendRequestSchema,
-  CreateFriendRequestType,
-} from '@/schemas/friends';
-import { Popover, Button, TextInput } from '@mantine/core';
+import { Button, Popover, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
-import { useMutation, useQueryClient } from '@tanstack/react-query'; // Assuming @tanstack/react-query
-import { friendsService } from '@/services/friends.service'; // Assuming your service path
-import { notifications } from '@mantine/notifications'; // For feedback
+// Assuming your service path
+import { notifications } from '@mantine/notifications';
+
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+// For feedback
 import { ReactQueryTags } from '@/enums';
+import { CreateFriendRequestSchema, CreateFriendRequestType } from '@/schemas/friends';
+// Assuming @tanstack/react-query
+import { friendsService } from '@/services/friends.service';
 
 // TODO: close popover on success
 export const AddNewFriendPopover = () => {
@@ -42,8 +44,7 @@ export const AddNewFriendPopover = () => {
     onError: (error: any) => {
       notifications.show({
         title: 'Error',
-        message:
-          error.response?.data?.message || 'Failed to send friend request.',
+        message: error.response?.data?.message || 'Failed to send friend request.',
         color: 'red',
       });
     },
@@ -54,9 +55,9 @@ export const AddNewFriendPopover = () => {
   });
 
   return (
-    <Popover width={400} position='bottom' withArrow shadow='md' trapFocus>
+    <Popover width={400} position="bottom" withArrow shadow="md" trapFocus>
       <Popover.Target>
-        <Button variant='outline' color='green'>
+        <Button variant="outline" color="green">
           Add friend
         </Button>
       </Popover.Target>
@@ -64,17 +65,13 @@ export const AddNewFriendPopover = () => {
         <form onSubmit={handleSubmit}>
           <TextInput
             {...form.getInputProps('email')}
-            placeholder='Friend email'
+            placeholder="Friend email"
             label="Friend's Email"
             withAsterisk
-            mb='sm'
+            mb="sm"
             disabled={sendFriendRequestMutation.isPending}
           />
-          <Button
-            type='submit'
-            fullWidth
-            loading={sendFriendRequestMutation.isPending}
-          >
+          <Button type="submit" fullWidth loading={sendFriendRequestMutation.isPending}>
             Add friend
           </Button>
         </form>

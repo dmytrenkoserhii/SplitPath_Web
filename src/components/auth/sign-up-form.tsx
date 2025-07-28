@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+
 import Link from 'next/link';
-import { useForm, zodResolver } from '@mantine/form';
+import { useRouter } from 'next/navigation';
+
 import {
   Anchor,
   Button,
@@ -15,14 +17,14 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
+import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 
-import { SignUpFormSchema } from '@/schemas/auth';
-import { useRouter } from 'next/navigation';
-import { authService } from '@/services';
-import { SignUpFormSchemaType } from '@/schemas/auth';
-import { queryClient } from '@/lib';
 import { ReactQueryTags } from '@/enums';
+import { queryClient } from '@/lib';
+import { SignUpFormSchema } from '@/schemas/auth';
+import { SignUpFormSchemaType } from '@/schemas/auth';
+import { authService } from '@/services';
 
 // TODO: notifications doesn't work
 export const SignUpForm = () => {
@@ -71,71 +73,60 @@ export const SignUpForm = () => {
   };
 
   return (
-    <Paper
-      shadow='md'
-      radius='md'
-      p='xl'
-      withBorder
-      w={{ base: '90%', sm: 450 }}
-    >
-      <Title order={2} ta='center' mt='md' mb={50}>
+    <Paper shadow="md" radius="md" p="xl" withBorder w={{ base: '90%', sm: 450 }}>
+      <Title order={2} ta="center" mt="md" mb={50}>
         Create Account
       </Title>
 
       <form onSubmit={handleSubmit}>
-        <Stack gap='md'>
+        <Stack gap="md">
           <TextInput
-            label='Username'
-            placeholder='Your username'
+            label="Username"
+            placeholder="Your username"
             required
             {...form.getInputProps('username')}
           />
 
           <TextInput
-            label='Email'
-            placeholder='hello@mantine.dev'
+            label="Email"
+            placeholder="hello@mantine.dev"
             required
             {...form.getInputProps('email')}
           />
 
           <PasswordInput
-            label='Password'
-            placeholder='Your password'
+            label="Password"
+            placeholder="Your password"
             required
             {...form.getInputProps('password')}
           />
 
           <PasswordInput
-            label='Confirm password'
-            placeholder='Confirm password'
+            label="Confirm password"
+            placeholder="Confirm password"
             required
             {...form.getInputProps('passwordConfirmation')}
           />
 
           <Checkbox
-            label='I accept terms and conditions'
+            label="I accept terms and conditions"
             {...form.getInputProps('terms', { type: 'checkbox' })}
           />
 
-          <Button type='submit' fullWidth mt='xl' loading={isLoading}>
+          <Button type="submit" fullWidth mt="xl" loading={isLoading}>
             Sign Up
           </Button>
         </Stack>
       </form>
 
-      <Divider label='Or continue with' labelPosition='center' my='lg' />
+      <Divider label="Or continue with" labelPosition="center" my="lg" />
 
-      <Button 
-        variant='outline' 
-        fullWidth 
-        onClick={handleGoogleSignUp}
-        loading={isLoading}
-      >
+      <Button variant="outline" fullWidth onClick={handleGoogleSignUp} loading={isLoading}>
         Google
       </Button>
 
-      <Group justify='center' mt='md'>
-        <Anchor component={Link} href='/sign-in' size='sm'>
+      <Group justify="center" mt="md">
+        <Anchor component={Link} href="/sign-in" size="sm">
           Already have an account? Sign In
         </Anchor>
       </Group>

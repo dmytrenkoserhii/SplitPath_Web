@@ -1,6 +1,8 @@
 import { Stack, Text } from '@mantine/core';
-import { ChatsListItem } from './chats-list-item';
+
 import { ChatPreview } from '@/types/chats';
+
+import { ChatsListItem } from './chats-list-item';
 
 interface ChatListProps {
   id?: number;
@@ -11,7 +13,7 @@ interface ChatListProps {
 export const ChatsList = ({ chats, id, onlineStatuses }: ChatListProps) => {
   if (chats.length === 0) {
     return (
-      <Text c='dimmed' ta='center' py='xl'>
+      <Text c="dimmed" ta="center" py="xl">
         No chats
       </Text>
     );
