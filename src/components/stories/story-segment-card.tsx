@@ -29,11 +29,17 @@ export function StorySegmentCard({
     router.push('/stories/selection');
   };
 
+  const paragraphs = segment.text.split(/\n\s*\n/).filter((p) => p.trim() !== '');
+
   if (isFinalSegment) {
     return (
       <Card className={styles.card} shadow="sm" p="lg" radius="md" withBorder mb="md">
         <Stack>
-          <Text size="lg">{segment.text}</Text>
+          {paragraphs.map((paragraph, index) => (
+            <Text key={index} size="lg" style={{ lineHeight: 1.6 }}>
+              {paragraph}
+            </Text>
+          ))}
           <Stack gap="md">
             <Title order={3} c="green" ta="center">
               🎉 Adventure Complete!
@@ -55,7 +61,11 @@ export function StorySegmentCard({
   return (
     <Card className={styles.card} shadow="sm" p="lg" radius="md" withBorder mb="md">
       <Stack>
-        <Text size="lg">{segment.text}</Text>
+        {paragraphs.map((paragraph, index) => (
+          <Text key={index} size="lg" style={{ lineHeight: 1.6 }}>
+            {paragraph}
+          </Text>
+        ))}
         <Stack gap="md">
           <Text size="sm" fw={500} c="dimmed">
             {shouldShowActiveChoices ? 'Choose your next action:' : 'Available choices:'}
@@ -73,7 +83,8 @@ export function StorySegmentCard({
                   size="sm"
                   onClick={() => (shouldShowActiveChoices ? onChoiceSelect(choice) : undefined)}
                   disabled={isDisabled}
-                  className={`${styles.choiceButton} ${!shouldShowActiveChoices && !isSelected ? styles.inactiveChoiceButton : ''}`}
+                  className={`${styles.choiceButton} ${!shouldShowActiveChoices && !isSelected ? styles.inactiveChoiceButton : ''} ${isSelected ? styles.selectedChoiceButton : ''}`}
+                  loading={isGenerating}
                 >
                   {choice}
                 </Button>

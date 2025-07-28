@@ -1,6 +1,5 @@
 .card {
   margin-bottom: 2rem;
-  background-color: var(--mantine-color-white);
   transition: box-shadow 0.2s ease;
 }
 
@@ -9,18 +8,29 @@
 }
 
 .card:not(:last-child) {
-  opacity: 0.9;
+  opacity: 0.6;
 }
 
 .choiceButton {
-  min-height: 60px;
+  min-height: 80px;
+  height: auto;
+  width: 100%;
   white-space: normal;
   word-wrap: break-word;
+  font-size: var(--mantine-font-size-md);
+}
+
+.choiceButton :global(.mantine-Button-label) {
+  white-space: normal;
+  height: auto;
+  text-align: center;
+}
+
+.selectedChoiceButton {
+  background-color: var(--mantine-color-green-light);
+  color: var(--mantine-color-green-filled);
 }
 
 .inactiveChoiceButton {
-  opacity: 0.3;
-  background-color: var(--mantine-color-gray-0);
-  border-color: var(--mantine-color-gray-4);
-  color: var(--mantine-color-gray-6);
+  opacity: 0.4;
 }

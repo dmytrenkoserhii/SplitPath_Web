@@ -8,9 +8,14 @@ import { GlobalChat, GlobalChatSocketManager } from '@/components/global-chat';
 import { Footer, Header, Navbar } from '@/components/layout';
 import { NavbarProvider } from '@/hooks';
 
+// TODO
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   try {
     const { user } = await getCurrentUserAction();
+
+    if (!user) {
+      throw new Error('User not found');
+    }
 
     return (
       <NavbarProvider>

@@ -1,19 +1,17 @@
-import { NextFetchEvent, NextResponse, type NextRequest } from 'next/server';
-import { CustomMiddleware } from './chain';
-import { createAuthHeaders } from '@/utils/create-auth-headers.util';
-import { verifyAccessToken } from '@/utils/verify-access-token.util';
-import { refreshAccessToken } from '@/utils/refresh-access-token.util';
-import { logout } from '@/utils/logout.util';
+import { NextFetchEvent, type NextRequest, NextResponse } from 'next/server';
+
 import { isProtectedRoute } from '@/utils';
+import { createAuthHeaders } from '@/utils/create-auth-headers.util';
+import { logout } from '@/utils/logout.util';
+import { refreshAccessToken } from '@/utils/refresh-access-token.util';
+import { verifyAccessToken } from '@/utils/verify-access-token.util';
+
+import { CustomMiddleware } from './chain';
 
 // TODO: perhaps we need to define all our routes in a single file
 // to avoid mistakes
 export function withAuth(middleware: CustomMiddleware) {
-  return async (
-    request: NextRequest,
-    event: NextFetchEvent,
-    response: NextResponse
-  ) => {
+  return async (request: NextRequest, event: NextFetchEvent, response: NextResponse) => {
     const pathname = request.nextUrl.pathname;
     const accessToken = request.cookies.get('access_token');
     const refreshToken = request.cookies.get('refresh_token');

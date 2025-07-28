@@ -1,10 +1,13 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { chatsService, friendsService } from '@/services';
-import { ChatsList } from '.';
 import { Text } from '@mantine/core';
+
+import { useQuery } from '@tanstack/react-query';
+
 import { ReactQueryTags } from '@/enums';
+import { chatsService, friendsService } from '@/services';
+
+import { ChatsList } from '.';
 
 interface ChatsListHandlerProps {
   id?: number;
@@ -39,11 +42,5 @@ export const ChatsListHandler = ({ id }: ChatsListHandlerProps) => {
     return <Text>Error loading chats.</Text>;
   }
 
-  return (
-    <ChatsList
-      id={id}
-      chats={chatsPreviews || []}
-      onlineStatuses={onlineStatuses || {}}
-    />
-  );
+  return <ChatsList id={id} chats={chatsPreviews || []} onlineStatuses={onlineStatuses || {}} />;
 };

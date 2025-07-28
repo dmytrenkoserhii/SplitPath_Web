@@ -1,5 +1,5 @@
-import { User } from '@/types/user/user.interface';
 import { FriendStatus } from '@/enums/friend-status.enum';
+import { User } from '@/types/user/user.interface';
 
 export interface Friend {
   id: number;

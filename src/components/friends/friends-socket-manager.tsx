@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useEffect } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
-import { getFriendsSocket, queryClient } from '@/lib';
+
 import { ReactQueryTags } from '@/enums';
+import { getFriendsSocket, queryClient } from '@/lib';
 import { usersService } from '@/services';
-import { User } from '@/types/user';
 import { Friend } from '@/types/friends';
+import { User } from '@/types/user';
 
 export const FriendsSocketManager = () => {
   const friendsSocket = React.useMemo(() => getFriendsSocket(), []);
@@ -22,74 +24,56 @@ export const FriendsSocketManager = () => {
   React.useEffect(() => {
     const updateQueryItems = (
       queryKey: any[],
-      updater: (items: Friend[] | undefined) => Friend[]
+      updater: (items: Friend[] | undefined) => Friend[],
     ) => {
-      queryClient.setQueryData(
-        queryKey,
-        (oldData: { items: Friend[]; meta?: any } | undefined) => {
-          const oldItems = oldData?.items || [];
-          const newItems = updater(oldItems);
-          return { items: newItems, meta: oldData?.meta };
-        }
-      );
+      queryClient.setQueryData(queryKey, (oldData: { items: Friend[]; meta?: any } | undefined) => {
+        const oldItems = oldData?.items || [];
+        const newItems = updater(oldItems);
+        return { items: newItems, meta: oldData?.meta };
+      });
     };
 
     const onNewFriendRequest = (request: Friend) => {
-      updateQueryItems(
-        [ReactQueryTags.FRIEND_REQUESTS_INCOMING],
-        (oldItems) => [request, ...(oldItems || [])]
-      );
-    };
-
-    const onFriendRequestAccepted = (friend: Friend) => {
-      updateQueryItems([ReactQueryTags.FRIEND_REQUESTS_OUTGOING], (oldItems) =>
-        (oldItems || []).filter((req) => req.id !== friend.id)
-      );
-      updateQueryItems([ReactQueryTags.FRIENDS], (oldItems) => [
-        friend,
+      updateQueryItems([ReactQueryTags.FRIEND_REQUESTS_INCOMING], (oldItems) => [
+        request,
         ...(oldItems || []),
       ]);
     };
 
+    const onFriendRequestAccepted = (friend: Friend) => {
+      updateQueryItems([ReactQueryTags.FRIEND_REQUESTS_OUTGOING], (oldItems) =>
+        (oldItems || []).filter((req) => req.id !== friend.id),
+      );
+      updateQueryItems([ReactQueryTags.FRIENDS], (oldItems) => [friend, ...(oldItems || [])]);
+    };
+
     const onFriendRequestRejected = (request: Friend) => {
       updateQueryItems([ReactQueryTags.FRIEND_REQUESTS_OUTGOING], (oldItems) =>
-        (oldItems || []).filter((req) => req.id !== request.id)
+        (oldItems || []).filter((req) => req.id !== request.id),
       );
-      updateQueryItems(
-        [ReactQueryTags.FRIEND_REQUESTS_REJECTED_OUTGOING],
-        (oldItems) => [request, ...(oldItems || [])]
-      );
+      updateQueryItems([ReactQueryTags.FRIEND_REQUESTS_REJECTED_OUTGOING], (oldItems) => [
+        request,
+        ...(oldItems || []),
+      ]);
     };
 
     const onFriendDeleted = (friend: Friend) => {
       updateQueryItems([ReactQueryTags.FRIENDS], (oldItems) =>
-        (oldItems || []).filter((f) => f.id !== friend.id)
+        (oldItems || []).filter((f) => f.id !== friend.id),
       );
     };
 
     const onFriendRequestResent = (request: Friend) => {
-      updateQueryItems(
-        [ReactQueryTags.FRIEND_REQUESTS_REJECTED_INCOMING],
-        (oldItems) => (oldItems || []).filter((req) => req.id !== request.id)
+      updateQueryItems([ReactQueryTags.FRIEND_REQUESTS_REJECTED_INCOMING], (oldItems) =>
+        (oldItems || []).filter((req) => req.id !== request.id),
       );
-      updateQueryItems(
-        [ReactQueryTags.FRIEND_REQUESTS_INCOMING],
-        (oldItems) => {
-          const filteredItems = (oldItems || []).filter(
-            (req) => req.id !== request.id
-          );
-          return [request, ...filteredItems];
-        }
-      );
+      updateQueryItems([ReactQueryTags.FRIEND_REQUESTS_INCOMING], (oldItems) => {
+        const filteredItems = (oldItems || []).filter((req) => req.id !== request.id);
+        return [request, ...filteredItems];
+      });
     };
 
-    const onFriendStatusChanged = ({
-      userId,
-      isOnline,
-    }: {
-      userId: number;
-      isOnline: boolean;
-    }) => {
+    const onFriendStatusChanged = ({ userId, isOnline }: { userId: number; isOnline: boolean }) => {
       if (!userData) return;
 
       // Update online status cache
@@ -98,7 +82,7 @@ export const FriendsSocketManager = () => {
         (oldData: { [key: number]: boolean } | undefined) => {
           if (!oldData) return { [userId]: isOnline };
           return { ...oldData, [userId]: isOnline };
-        }
+        },
       );
 
       // Also update the friends list if it exists
@@ -108,10 +92,7 @@ export const FriendsSocketManager = () => {
           if (!oldData) return oldData;
 
           const updatedItems = oldData.items.map((friend) => {
-            const friendUser =
-              friend.sender.id === userData.id
-                ? friend.receiver
-                : friend.sender;
+            const friendUser = friend.sender.id === userData.id ? friend.receiver : friend.sender;
 
             if (friendUser.id !== userId) return friend;
 
@@ -126,7 +107,7 @@ export const FriendsSocketManager = () => {
             ...oldData,
             items: updatedItems,
           };
-        }
+        },
       );
     };
 

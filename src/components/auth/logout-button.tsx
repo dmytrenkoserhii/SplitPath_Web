@@ -1,11 +1,14 @@
 'use client';
 
 import React from 'react';
-import { authService } from '@/services';
+
 import { useRouter } from 'next/navigation';
+
 import { Button } from '@mantine/core';
-import { queryClient } from '@/lib';
+
 import { ReactQueryTags } from '@/enums';
+import { queryClient } from '@/lib';
+import { authService } from '@/services';
 
 /**
  * A button component that logs out the user and redirects to the sign-in page.
@@ -25,5 +28,9 @@ export const LogoutButton = () => {
     }
   };
 
-  return <Button onClick={onLogout}>Logout</Button>;
+  return (
+    <Button onClick={onLogout} variant="outline">
+      Logout
+    </Button>
+  );
 };

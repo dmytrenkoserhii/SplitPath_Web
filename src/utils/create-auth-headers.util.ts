@@ -14,10 +14,7 @@ type Props = {
  * @param {Props} authCookies An object containing optional `accessToken` and `refreshToken` as `RequestCookie` objects.
  * @returns A new `Headers` object with the authentication cookies included.
  */
-export const createAuthHeaders = (
-  headers: Headers,
-  { accessToken, refreshToken }: Props
-) => {
+export const createAuthHeaders = (headers: Headers, { accessToken, refreshToken }: Props) => {
   const cookies: string[] = [];
 
   if (accessToken) {
@@ -33,10 +30,7 @@ export const createAuthHeaders = (
   if (cookies.length > 0) {
     const existingCookieHeader = newHeaders.get('Cookie');
     if (existingCookieHeader) {
-      newHeaders.set(
-        'Cookie',
-        `${existingCookieHeader}; ${cookies.join('; ')}`
-      );
+      newHeaders.set('Cookie', `${existingCookieHeader}; ${cookies.join('; ')}`);
     } else {
       newHeaders.set('Cookie', cookies.join('; '));
     }

@@ -62,5 +62,10 @@ export const theme = createTheme({
         color: 'primary',
       },
     },
+    Pagination: {
+      defaultProps: {
+        color: 'primary',
+      },
+    },
   },
 });

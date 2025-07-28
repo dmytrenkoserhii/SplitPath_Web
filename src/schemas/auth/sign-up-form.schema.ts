@@ -17,15 +17,13 @@ export const SignUpFormSchema = z
     {
       message: 'Passwords must match!',
       path: ['passwordConfirmation'],
-    }
+    },
   )
   .superRefine(({ password }, checkPassComplexity) => {
     const containsUppercase = /[A-Z]/.test(password);
     const containsLowercase = /[a-z]/.test(password);
     const containsNumber = /\d/.test(password);
-    const containsSpecialChar = /[`!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?~ ]/.test(
-      password
-    );
+    const containsSpecialChar = /[`!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?~ ]/.test(password);
     if (!containsUppercase) {
       checkPassComplexity.addIssue({
         code: 'custom',

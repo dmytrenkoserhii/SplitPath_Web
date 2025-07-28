@@ -1,5 +1,6 @@
+import { Group, Stack, Title } from '@mantine/core';
+
 import { ServerError } from '@/components/auth';
-import { Stack, Title, Group } from '@mantine/core';
 import { AddNewFriendPopover, FriendsTabs } from '@/components/friends';
 
 // I decided to make this page requests completely client side
@@ -13,7 +14,7 @@ export default function FriendsPage() {
   try {
     return (
       <Stack>
-        <Group justify='space-between'>
+        <Group justify="space-between">
           <Title order={2}>Friends</Title>
           <AddNewFriendPopover />
         </Group>

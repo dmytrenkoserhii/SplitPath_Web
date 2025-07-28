@@ -1,4 +1,4 @@
-import { Group, ThemeIcon, Text } from '@mantine/core';
+import { Group, Text, ThemeIcon } from '@mantine/core';
 
 interface FeatureProps {
   icon: React.ReactNode;
@@ -8,15 +8,15 @@ interface FeatureProps {
 
 export const Feature = ({ icon, title, description }: FeatureProps) => {
   return (
-    <Group align='flex-start' wrap='nowrap'>
-      <ThemeIcon size='xl' radius='md' variant='light' color='orange'>
+    <Group align="flex-start" wrap="nowrap">
+      <ThemeIcon size="xl" radius="md" variant="light" color="orange">
         {icon}
       </ThemeIcon>
       <div>
-        <Text fw={700} size='lg' mb={5}>
+        <Text fw={700} size="lg" mb={5}>
           {title}
         </Text>
-        <Text c='dimmed' size='sm'>
+        <Text c="dimmed" size="sm">
           {description}
         </Text>
       </div>

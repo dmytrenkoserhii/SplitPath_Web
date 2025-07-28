@@ -9,9 +9,7 @@ import { z } from 'zod';
  */
 export const toCamelCase = (str: string): string => {
   return str
-    .replace(/([-_][a-z])/gi, (match) =>
-      match.toUpperCase().replace('-', '').replace('_', '')
-    )
+    .replace(/([-_][a-z])/gi, (match) => match.toUpperCase().replace('-', '').replace('_', ''))
     .replace(/^[A-Z]/, (match) => match.toLowerCase());
 };
 
@@ -64,10 +62,8 @@ type AnyObject = Record<string, any>;
  * @param obj The object to convert.
  * @returns A new object with camelCased keys and type-converted string values.
  */
-export const convertObjectKeysToCamelCaseAndConvertStringValuesToType = <
-  T extends AnyObject
->(
-  obj: AnyObject
+export const convertObjectKeysToCamelCaseAndConvertStringValuesToType = <T extends AnyObject>(
+  obj: AnyObject,
 ): T =>
   Object.entries(obj).reduce((acc, [key, value]) => {
     if (value && typeof value === 'object' && !Array.isArray(value)) {

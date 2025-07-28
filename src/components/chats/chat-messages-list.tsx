@@ -1,22 +1,26 @@
 'use client';
 
-import { PrivateMessage } from '@/types/chats';
+import React from 'react';
+
 import {
   ActionIcon,
   Box,
   Center,
   LoadingOverlay,
   Paper,
-  rem,
   ScrollArea,
   Stack,
   Title,
+  rem,
 } from '@mantine/core';
-import React from 'react';
-import { ChatMessagesListItem } from './chat-messages-list-item';
-import { User } from '@/types/user';
+
 import { ChevronDown } from 'lucide-react';
+
 import { useMarkMessagesAsRead } from '@/hooks';
+import { PrivateMessage } from '@/types/chats';
+import { User } from '@/types/user';
+
+import { ChatMessagesListItem } from './chat-messages-list-item';
 
 interface ChatMessagesListProps {
   messages: PrivateMessage[];
@@ -24,6 +28,7 @@ interface ChatMessagesListProps {
   friend: User;
   onScrollToTop: () => void;
   isFetchingNextPage: boolean;
+  isFetching: boolean;
 }
 
 // TODO: I have a problem with scroll position when new messages are fetched
@@ -34,6 +39,7 @@ export const ChatMessagesList = ({
   friend,
   onScrollToTop,
   isFetchingNextPage,
+  isFetching,
 }: ChatMessagesListProps) => {
   const { addMessageToMarkAsRead } = useMarkMessagesAsRead();
 
@@ -41,8 +47,7 @@ export const ChatMessagesList = ({
   const hasUserScrolled = React.useRef(false);
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const scrollAreaRef = React.useRef<HTMLDivElement>(null);
-  const [showScrollToBottomButton, setShowScrollToBottomButton] =
-    React.useState(false);
+  const [showScrollToBottomButton, setShowScrollToBottomButton] = React.useState(false);
 
   const prevScrollHeightRef = React.useRef(0);
   const prevScrollTopRef = React.useRef(0);
@@ -62,17 +67,14 @@ export const ChatMessagesList = ({
           prevScrollTopRef.current = scrollAreaRef.current.scrollTop;
         } else if (prevScrollHeightRef.current > 0 && messages.length > 0) {
           const newScrollHeight = scrollAreaRef.current.scrollHeight;
-          const heightIncreasedBy =
-            newScrollHeight - prevScrollHeightRef.current;
+          const heightIncreasedBy = newScrollHeight - prevScrollHeightRef.current;
 
-          scrollAreaRef.current.scrollTop =
-            prevScrollTopRef.current + heightIncreasedBy;
+          scrollAreaRef.current.scrollTop = prevScrollTopRef.current + heightIncreasedBy;
 
           prevScrollHeightRef.current = 0;
           prevScrollTopRef.current = 0;
         } else {
-          const { scrollTop, scrollHeight, clientHeight } =
-            scrollAreaRef.current;
+          const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
           const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
           if (isNearBottom) {
             scrollToBottom();
@@ -100,16 +102,17 @@ export const ChatMessagesList = ({
   };
 
   return (
-    <Paper w='100%' h='100%' withBorder style={{ position: 'relative' }}>
+    <Paper w="100%" h="100%" withBorder style={{ position: 'relative' }}>
       <LoadingOverlay
-        visible={isFetchingNextPage}
+        visible={isFetching || isFetchingNextPage}
         zIndex={100001}
         overlayProps={{ radius: 'sm', blur: 1 }}
+        h="100%"
       />
 
-      <Stack h='100%' p='sm' data-testid='chat-messages-list'>
-        {!Boolean(messages.length) && (
-          <Center h='100%'>
+      <Stack h="100%" p="sm" data-testid="chat-messages-list">
+        {!Boolean(messages.length) && !isFetching && (
+          <Center h="100%">
             <Title order={3}>
               Say hi to{' '}
               <span style={{ color: 'var(--mantine-color-secondary-6)' }}>
@@ -123,7 +126,7 @@ export const ChatMessagesList = ({
             <ScrollArea
               scrollbarSize={3}
               scrollHideDelay={2000}
-              h='100%'
+              h="100%"
               viewportRef={scrollAreaRef}
               onScrollPositionChange={handleScroll}
               style={{ pointerEvents: isFetchingNextPage ? 'none' : 'auto' }}
@@ -141,10 +144,10 @@ export const ChatMessagesList = ({
 
             {showScrollToBottomButton && (
               <ActionIcon
-                variant='filled'
-                size='xl'
-                radius='xl'
-                color='primary'
+                variant="filled"
+                size="xl"
+                radius="xl"
+                color="primary"
                 onClick={scrollToBottom}
                 style={{
                   position: 'absolute',

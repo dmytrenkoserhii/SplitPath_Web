@@ -9,10 +9,7 @@ import { NextResponse } from 'next/server';
  * @param cookies An array of `ResponseCookie` objects to append to the response.
  * @returns The `NextResponse` with the appended cookies.
  */
-export const appendCookiesToNextResponse = (
-  response: NextResponse,
-  cookies: ResponseCookie[]
-) => {
+export const appendCookiesToNextResponse = (response: NextResponse, cookies: ResponseCookie[]) => {
   cookies.forEach((cookie) => {
     const { name, value, ...options } = cookie;
     response.cookies.set(name, value, options);
